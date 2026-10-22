@@ -28,6 +28,10 @@ test("nine-step onboarding resumes and counts separate savings exactly once", as
   await page.getByLabel("Digital wallet you can spend").fill("500");
   await page.getByLabel("Money saved separately").fill("300");
   await page.getByRole("button", { name: "Continue", exact: true }).click();
+  // The next heading appears after the IndexedDB step write commits.
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+    "Find your allowance rhythm.",
+  );
   await page.reload();
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(
     "Find your allowance rhythm.",
