@@ -1,0 +1,2 @@
+# Pockit
+Personal budgeting for a student receiving an allowance. Most-used task: record a purchase and check what remains safe to spend. Primary device is iPhone XS Max, with desktop support. Data stays in IndexedDB; exports are the recovery mechanism. All money calculations use integer centavos. Expected income never increases received cash. Savings transfers never count as spending. See DEVELOPMENT.md for explicit assumptions and acceptance checks.
