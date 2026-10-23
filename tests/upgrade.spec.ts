@@ -1,7 +1,7 @@
 import { choose } from "./helpers";
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
-import { addDays, format } from "date-fns";
+import { addDays, format, parseISO } from "date-fns";
 import { freshData, today } from "../src/domain/model";
 import { returningUser, goSection } from "./helpers";
 
@@ -44,7 +44,7 @@ test("nine-step onboarding resumes and counts separate savings exactly once", as
   await choose(page.getByLabel("How often?"), "weekly");
   await page
     .getByLabel("Next allowance expected")
-    .fill(format(addDays(new Date(), 7), "yyyy-MM-dd"));
+    .fill(format(addDays(parseISO(today()), 7), "yyyy-MM-dd"));
   await page.getByRole("button", { name: "Continue", exact: true }).click();
   await choose(page.getByLabel("Monday attendance"), "campus");
   await choose(page.getByLabel("Tuesday attendance"), "online");
@@ -162,7 +162,7 @@ test("routes, ordered legs, actual fares and cancelled days update the same budg
   await page.goto("/#/transport");
   await page
     .getByLabel("Travel date")
-    .fill(format(addDays(new Date(), 1), "yyyy-MM-dd"));
+    .fill(format(addDays(parseISO(today()), 1), "yyyy-MM-dd"));
   await choose(page.getByLabel("Attendance for this date"), "campus");
   await expect(page.locator(".day-editor")).toContainText(
     "₱45.00 still reserved",

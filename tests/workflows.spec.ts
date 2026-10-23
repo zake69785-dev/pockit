@@ -1,11 +1,12 @@
 import { choose } from "./helpers";
 import { returningUser, goSection } from "./helpers";
 import { test, expect, type Page } from "@playwright/test";
-import { addDays, format } from "date-fns";
+import { addDays, format, parseISO } from "date-fns";
+import { today as appToday } from "../src/domain/model";
 test.beforeEach(async ({ page }) => {
   await returningUser(page);
 });
-const today = format(new Date(), "yyyy-MM-dd");
+const today = appToday();
 async function transaction(
   page: Page,
   type: string,
@@ -33,7 +34,7 @@ test("received income, budget, expenses, goals, transfers and persistence", asyn
   await page.getByRole("button", { name: "Adjust budget" }).click();
   await page
     .getByLabel("Next allowance date")
-    .fill(format(addDays(new Date(), 7), "yyyy-MM-dd"));
+    .fill(format(addDays(parseISO(today), 7), "yyyy-MM-dd"));
   await page.getByLabel("Leisure budget").fill("350");
   await page.getByRole("button", { name: "Save budget plan" }).click();
   await expect(page.getByTestId("safe-spend")).toHaveText("₱450.00");
@@ -83,7 +84,7 @@ test("expected income does not inflate cash and receiving is idempotent", async 
   await page.getByLabel("Amount (PHP)").fill("2000");
   await page
     .getByLabel("Expected date")
-    .fill(format(addDays(new Date(), 7), "yyyy-MM-dd"));
+    .fill(format(addDays(parseISO(today), 7), "yyyy-MM-dd"));
   await page.getByRole("button", { name: "Schedule income" }).click();
   await page.getByRole("link", { name: "Home", exact: true }).click();
   await expect(page.getByTestId("total-cash")).toHaveText("₱0.00");
