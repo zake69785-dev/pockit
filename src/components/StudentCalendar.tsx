@@ -1,3 +1,4 @@
+import { Select } from "./Select";
 import { useState } from "react";
 import {
   addDays,
@@ -54,13 +55,13 @@ export function StudentCalendar({
       <div className="button-row">
         <label>
           Calendar view
-          <select value={view} onChange={(e) => setView(e.target.value)}>
+          <Select value={view} onChange={(e) => setView(e.target.value)}>
             {["month", "week", "day", "agenda"].map((v) => (
               <option key={v} value={v}>
                 {v[0].toUpperCase() + v.slice(1)}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         <label>
           Starting date
@@ -76,7 +77,7 @@ export function StudentCalendar({
         </label>
         <label>
           Event category
-          <select value={filter} onChange={(e) => setFilter(e.target.value)}>
+          <Select value={filter} onChange={(e) => setFilter(e.target.value)}>
             {[
               "all",
               "class",
@@ -94,7 +95,7 @@ export function StudentCalendar({
                 {v[0].toUpperCase() + v.slice(1)}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
       </div>
       <p className="hint">
@@ -182,31 +183,31 @@ export function StudentCalendar({
           />
           <label>
             Event type
-            <select name="category" defaultValue={current?.category ?? "class"}>
+            <Select name="category" defaultValue={current?.category ?? "class"}>
               {["class", "exam", "personal", "study"].map((v) => (
                 <option key={v} value={v}>
                   {v}
                 </option>
               ))}
-            </select>
+            </Select>
           </label>
           <label>
             Repeat event
-            <select name="repeat" defaultValue={current?.repeat ?? "none"}>
+            <Select name="repeat" defaultValue={current?.repeat ?? "none"}>
               <option value="none">One time</option>
               <option value="weekly">Every week</option>
-            </select>
+            </Select>
           </label>
           <label>
             Related course
-            <select name="courseId" defaultValue={current?.courseId ?? ""}>
+            <Select name="courseId" defaultValue={current?.courseId ?? ""}>
               <option value="">No course</option>
               {s.courses.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.name}
                 </option>
               ))}
-            </select>
+            </Select>
           </label>
           <button className="primary" disabled={mutation.busy}>
             {editing ? "Save event" : "Add event"}

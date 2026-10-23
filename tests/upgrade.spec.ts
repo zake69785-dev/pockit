@@ -1,3 +1,4 @@
+import { choose } from "./helpers";
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { addDays, format } from "date-fns";
@@ -40,18 +41,18 @@ test("nine-step onboarding resumes and counts separate savings exactly once", as
   await expect(page.getByLabel("Cash you can spend")).toHaveValue("1000");
   await page.getByRole("button", { name: "Continue", exact: true }).click();
   await page.getByLabel("Normal allowance").fill("2500");
-  await page.getByLabel("How often?").selectOption("weekly");
+  await choose(page.getByLabel("How often?"), "weekly");
   await page
     .getByLabel("Next allowance expected")
     .fill(format(addDays(new Date(), 7), "yyyy-MM-dd"));
   await page.getByRole("button", { name: "Continue", exact: true }).click();
-  await page.getByLabel("Monday attendance").selectOption("campus");
-  await page.getByLabel("Tuesday attendance").selectOption("online");
+  await choose(page.getByLabel("Monday attendance"), "campus");
+  await choose(page.getByLabel("Tuesday attendance"), "online");
   await page.getByRole("button", { name: "Continue", exact: true }).click();
   await page.getByRole("button", { name: "Add transport leg" }).first().click();
   await page.getByLabel("Outbound fare 1").fill("15");
   await page.getByRole("button", { name: "Add transport leg" }).first().click();
-  await page.getByLabel("Outbound leg 2").selectOption("Bus");
+  await choose(page.getByLabel("Outbound leg 2"), "Bus");
   await page.getByLabel("Outbound fare 2").fill("30");
   await page.getByRole("button", { name: "Add transport leg" }).last().click();
   await page.getByLabel("Return fare 1").fill("40");
@@ -60,16 +61,14 @@ test("nine-step onboarding resumes and counts separate savings exactly once", as
     .getByRole("button", { name: "+ Mobile data", exact: true })
     .click();
   await page.getByLabel("Amount (PHP)", { exact: true }).fill("100");
-  await page
-    .getByRole("combobox", { name: "Repeat", exact: true })
-    .selectOption("monthly");
+  await choose(page
+    .getByRole("combobox", { name: "Repeat", exact: true }), "monthly");
   await page.getByRole("button", { name: "Continue", exact: true }).click();
   await page.getByLabel("Goal name (optional)").fill("A new laptop");
   await page.getByLabel("Goal target").fill("30000");
   await page.getByLabel("Already saved for this goal").fill("100");
-  await page
-    .getByRole("combobox", { name: "Priority", exact: true })
-    .selectOption("high");
+  await choose(page
+    .getByRole("combobox", { name: "Priority", exact: true }), "high");
   await page.getByRole("button", { name: "Continue", exact: true }).click();
   await page.getByRole("button", { name: "Continue", exact: true }).click();
   await expect(page.locator(".setup-review")).toContainText("₱1,800.00");
@@ -114,24 +113,22 @@ test("routes, ordered legs, actual fares and cancelled days update the same budg
   await page.getByRole("button", { name: "Add transport leg" }).click();
   await page.getByLabel("Route fare 1").fill("15");
   await page.getByRole("button", { name: "Add transport leg" }).click();
-  await page.getByLabel("Route leg 2").selectOption("Bus");
+  await choose(page.getByLabel("Route leg 2"), "Bus");
   await page.getByLabel("Route fare 2").fill("30");
   await page.getByRole("button", { name: "Move leg 2 up" }).click();
-  await expect(page.getByLabel("Route leg 1")).toHaveValue("Bus");
+  await expect(page.getByLabel("Route leg 1")).toContainText("Bus");
   await page.getByRole("button", { name: "Save route", exact: true }).click();
   await page.getByRole("button", { name: "New route" }).click();
   await page.getByLabel("Route name").fill("Walk home");
   await page.getByRole("button", { name: "Add transport leg" }).click();
-  await page.getByLabel("Route leg 1").selectOption("Walking");
+  await choose(page.getByLabel("Route leg 1"), "Walking");
   await expect(page.getByLabel("Route fare 1")).toBeDisabled();
   await page.getByRole("button", { name: "Save route", exact: true }).click();
-  await page
-    .getByLabel("Default outbound route")
-    .selectOption({ label: "Jeepney and bus · ₱45.00" });
-  await page
-    .getByLabel("Default return route")
-    .selectOption({ label: "Walk home · ₱0.00" });
-  await page.getByLabel("Attendance for this date").selectOption("campus");
+  await choose(page
+    .getByLabel("Default outbound route"), { label: "Jeepney and bus · ₱45.00" });
+  await choose(page
+    .getByLabel("Default return route"), { label: "Walk home · ₱0.00" });
+  await choose(page.getByLabel("Attendance for this date"), "campus");
   await expect(page.locator(".day-editor")).toContainText(
     "₱45.00 still reserved",
   );
@@ -151,7 +148,7 @@ test("routes, ordered legs, actual fares and cancelled days update the same budg
   await expect(page.locator(".day-editor")).toContainText(
     "₱0.00 still reserved",
   );
-  await page.getByLabel("Attendance for this date").selectOption("holiday");
+  await choose(page.getByLabel("Attendance for this date"), "holiday");
   await page.getByRole("link", { name: "Home", exact: true }).click();
   await expect(page.getByTestId("total-cash")).toHaveText("₱970.00");
   await page.getByRole("link", { name: "Calendar", exact: true }).click();
@@ -166,11 +163,11 @@ test("routes, ordered legs, actual fares and cancelled days update the same budg
   await page
     .getByLabel("Travel date")
     .fill(format(addDays(new Date(), 1), "yyyy-MM-dd"));
-  await page.getByLabel("Attendance for this date").selectOption("campus");
+  await choose(page.getByLabel("Attendance for this date"), "campus");
   await expect(page.locator(".day-editor")).toContainText(
     "₱45.00 still reserved",
   );
-  await page.getByLabel("Attendance for this date").selectOption("online");
+  await choose(page.getByLabel("Attendance for this date"), "online");
   await expect(page.locator(".day-editor")).toContainText(
     "₱0.00 still reserved",
   );

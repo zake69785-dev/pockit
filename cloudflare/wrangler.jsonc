@@ -1,0 +1,14 @@
+{
+  "name": "pockit-push",
+  "main": "worker.ts",
+  "compatibility_date": "2026-10-23",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "pockit-push",
+      "database_id": "7563fe18-090b-437f-aa0c-6f0da989dcac",
+    },
+  ],
+  "triggers": { "crons": ["* * * * *"] },
+  "vars": { "ALLOWED_ORIGIN": "https://zake69785-dev.github.io" },
+}

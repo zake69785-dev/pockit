@@ -1,3 +1,4 @@
+import { Select } from "./Select";
 import { useState, type FormEvent } from "react";
 import {
   cents,
@@ -201,7 +202,7 @@ export function EntryForm({
       {kind === "transaction" && (
         <label>
           Transaction type
-          <select
+          <Select
             name="kind"
             value={entryKind}
             onChange={(e) => setEntryKind(e.target.value as Entry["kind"])}
@@ -210,7 +211,7 @@ export function EntryForm({
             <option value="income">Received income</option>
             <option value="save">Transfer to savings</option>
             <option value="withdraw">Withdraw from savings</option>
-          </select>
+          </Select>
         </label>
       )}
       {kind === "plan" ? (
@@ -248,7 +249,7 @@ export function EntryForm({
           />
           <label>
             Allowance frequency
-            <select name="frequency" defaultValue={data.allowance.frequency}>
+            <Select name="frequency" defaultValue={data.allowance.frequency}>
               {["daily", "weekly", "biweekly", "monthly", "irregular"].map(
                 (f) => (
                   <option key={f} value={f}>
@@ -256,17 +257,17 @@ export function EntryForm({
                   </option>
                 ),
               )}
-            </select>
+            </Select>
           </label>
           <label>
             Budget preference
-            <select name="preference" defaultValue={data.preference}>
+            <Select name="preference" defaultValue={data.preference}>
               <option value="conservative">
                 Conservative · more breathing room
               </option>
               <option value="balanced">Balanced · now and later</option>
               <option value="savings">Savings-focused · more progress</option>
-            </select>
+            </Select>
           </label>
           <p className="hint">
             Changing the next date also updates the recurrence anchor. Recorded
@@ -319,18 +320,18 @@ export function EntryForm({
             <>
               <label>
                 Category
-                <select
+                <Select
                   name="category"
                   defaultValue={entry?.category ?? "Food"}
                 >
                   {categories.map((c) => (
                     <option key={c}>{c}</option>
                   ))}
-                </select>
+                </Select>
               </label>
               <label>
                 Pay an essential (optional)
-                <select
+                <Select
                   name="billId"
                   defaultValue={
                     entry?.billId
@@ -357,7 +358,7 @@ export function EntryForm({
                           : ""}
                       </option>
                     ))}
-                </select>
+                </Select>
               </label>
             </>
           )}
@@ -365,37 +366,37 @@ export function EntryForm({
             <>
               <label>
                 Goal priority
-                <select
+                <Select
                   name="priority"
                   defaultValue={goal?.priority ?? "normal"}
                 >
                   <option value="low">Someday</option>
                   <option value="normal">Steady progress</option>
                   <option value="high">A priority</option>
-                </select>
+                </Select>
               </label>
               <label>
                 Goal icon
-                <select name="icon" defaultValue={goal?.icon ?? "sparkles"}>
+                <Select name="icon" defaultValue={goal?.icon ?? "sparkles"}>
                   <option value="sparkles">Something special</option>
                   <option value="laptop">Tech</option>
                   <option value="plane">Travel</option>
                   <option value="book">Learning</option>
                   <option value="home">Home</option>
-                </select>
+                </Select>
               </label>
             </>
           )}
           {(kind === "bill" || kind === "expected") && (
             <label>
               Repeat
-              <select name="frequency" defaultValue="irregular">
+              <Select name="frequency" defaultValue="irregular">
                 <option value="irregular">One time</option>
                 <option value="daily">Daily</option>
                 <option value="weekly">Weekly</option>
                 <option value="biweekly">Every two weeks</option>
                 <option value="monthly">Monthly</option>
-              </select>
+              </Select>
             </label>
           )}
           {kind === "transaction" &&
@@ -403,7 +404,7 @@ export function EntryForm({
               <>
                 <label>
                   Savings pocket
-                  <select
+                  <Select
                     name="goalId"
                     defaultValue={entry?.goalId ?? goalId ?? data.goals[0]?.id}
                     required
@@ -413,7 +414,7 @@ export function EntryForm({
                         {g.name}
                       </option>
                     ))}
-                  </select>
+                  </Select>
                 </label>
                 <p className="hint">
                   Transfers move money between your spending balance and a

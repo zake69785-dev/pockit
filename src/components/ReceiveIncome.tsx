@@ -1,3 +1,4 @@
+import { Select } from "./Select";
 import { useState } from "react";
 import type { Data } from "../domain/model";
 import { financialAccounts } from "../domain/accounts";
@@ -20,7 +21,7 @@ export function ReceiveIncome({
     <div className="form-stack">
       <label>
         Receive into
-        <select
+        <Select
           aria-label="Receive into"
           value={account}
           onChange={(e) => setAccount(e.target.value)}
@@ -30,7 +31,7 @@ export function ReceiveIncome({
               {a.name}
             </option>
           ))}
-        </select>
+        </Select>
       </label>
       <button
         className="small-button"

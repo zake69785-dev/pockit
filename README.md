@@ -1,4 +1,4 @@
-# Pockit 2.0
+# Pockit 3.0
 
 A private, offline-first personal budgeting app. Built with React, TypeScript, Vite, Tailwind CSS, React Router, Lucide, Motion, Dexie/IndexedDB and date-fns. Optimized for the iPhone XS Max's 414 × 896 CSS-pixel viewport, with responsive desktop layouts and light/dark themes.
 
@@ -86,7 +86,7 @@ No paid API, Mac, Apple Developer account or subscription is required. Browser f
 4. Turn on Airplane Mode, reopen Pockit, and record a small transaction to verify your device. All data entry and reports work offline.
 5. When a newer version is available, finish any open form, then tap **Update Pockit**. Stored data survives app updates.
 
-Safari, installed web apps, different domains, and different browsers can have separate storage. Export from the old context and restore in the intended one. The app requests no notification, location, camera, or bank permissions.
+Safari, installed web apps, different domains, and different browsers can have separate storage. Export from the old context and restore in the intended one. Location, camera and bank permissions are not requested. Optional push notifications require an approved backend, Home Screen installation on iPhone and an explicit permission action; see docs/PUSH_ARCHITECTURE.md.
 
 ## Backups and recovery
 
@@ -156,3 +156,7 @@ git push origin main
 ```
 
 Check [Actions](https://github.com/zake69785-dev/pockit/actions) for the green deployment before testing the live site. Review staged files; never add exported financial backups, credentials or `.env` files. Users finish open forms and tap **Update Pockit** when offered. Financial records stay in their browser across application updates.
+
+## Local Lovable integration
+
+The current local UI adapts the private Lovable reference into Pockit’s existing data-driven screens. See [integration progress](docs/LOVABLE_INTEGRATION_PROGRESS.md) for tests and limitations and [push architecture](docs/PUSH_ARCHITECTURE.md) for the deployed Cloudflare backend and remaining iPhone checks. Notification handlers and preferences do not imply live iPhone delivery. The updated GitHub Pages website has not been deployed.

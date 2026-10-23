@@ -1,4 +1,27 @@
-import { expect, type Page } from "@playwright/test";
+import { expect, type Page, type Locator } from "@playwright/test";
+export async function choose(
+  control: Locator,
+  value: string | { label: string },
+) {
+  await expect(control).toHaveAttribute("role", "combobox");
+  const label =
+    typeof value === "string"
+      ? await control
+          .locator("xpath=ancestor::label")
+          .locator("select.select-native option")
+          .evaluateAll(
+            (options, selected) =>
+              (options as HTMLOptionElement[]).find((o) => o.value === selected)
+                ?.textContent ?? "",
+            value,
+          )
+      : value.label;
+  await control.click();
+  await control
+    .page()
+    .getByRole("option", { name: label.trim(), exact: true })
+    .click();
+}
 import { freshData, type Data } from "../src/domain/model";
 export async function goSection(page: Page, name: string) {
   if (["Plan", "Goals", "Activity"].includes(name))

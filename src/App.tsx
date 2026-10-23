@@ -201,21 +201,7 @@ function Application() {
       <div className="app-shell">
         <header className="app-header">
           <NavLink to="/" className="brand" aria-label="Pockit home">
-            <svg aria-hidden="true" viewBox="0 0 32 36" width="28" height="32">
-              <circle cx="16" cy="9" r="7" fill="#ffd65a" />
-              <path
-                d="M4 5h24v17c0 6-12 11-12 11S4 28 4 22Z"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="3"
-              />
-              <path
-                d="M10 12h12"
-                stroke="currentColor"
-                strokeWidth="3"
-                strokeLinecap="round"
-              />
-            </svg>
+            <img src={`${import.meta.env.BASE_URL}illustrations/pockit-mascot.png`} width="44" height="44" alt="" />
             pockit<span>A little plan. A lot of possibility.</span>
           </NavLink>
           <span className="connection">

@@ -1,3 +1,4 @@
+import { choose } from "./helpers";
 import { test, expect } from "@playwright/test";
 import { addDays, format, parseISO } from "date-fns";
 import { returningUser } from "./helpers";
@@ -43,7 +44,7 @@ test("manual academics, grades and linked tasks persist offline", async ({
   await page
     .getByRole("checkbox", { name: "Study: Lab report", exact: true })
     .click();
-  await page.getByLabel("Task view").selectOption("completed");
+  await choose(page.getByLabel("Task view"), "completed");
   await expect(
     page.getByRole("checkbox", { name: "Study: Lab report", exact: true }),
   ).toBeChecked();
@@ -52,7 +53,7 @@ test("manual academics, grades and linked tasks persist offline", async ({
   });
   await context.setOffline(true);
   await page.reload();
-  await page.getByLabel("Task view").selectOption("completed");
+  await choose(page.getByLabel("Task view"), "completed");
   await expect(
     page.getByRole("checkbox", { name: "Study: Lab report", exact: true }),
   ).toBeChecked();
@@ -78,10 +79,10 @@ test("calendar ownership, recurring events and suspended study timer", async ({
   await page.getByLabel("Event date", { exact: true }).fill(tomorrow);
   await page.getByLabel("Start time (blank for all day)").fill("09:00");
   await page.getByLabel("End time (blank for all day)").fill("10:00");
-  await page.getByLabel("Repeat event").selectOption("weekly");
+  await choose(page.getByLabel("Repeat event"), "weekly");
   await page.getByRole("button", { name: "Add event", exact: true }).click();
   await page.getByLabel("Starting date").fill(tomorrow);
-  await page.getByLabel("Calendar view").selectOption("day");
+  await choose(page.getByLabel("Calendar view"), "day");
   await expect(
     page.locator(".unified-events").getByText("Physics class", { exact: true }),
   ).toHaveCount(1);
@@ -92,7 +93,7 @@ test("calendar ownership, recurring events and suspended study timer", async ({
     page.locator(".unified-events").getByText("Physics lab", { exact: true }),
   ).toHaveCount(1);
   for (const view of ["week", "month", "agenda"]) {
-    await page.getByLabel("Calendar view").selectOption(view);
+    await choose(page.getByLabel("Calendar view"), view);
     await expect(
       page
         .locator(".unified-events")

@@ -45,10 +45,14 @@ export default defineConfig({
         ],
       },
       workbox: {
+        importScripts: ["push-handler.js"],
         globPatterns: ["**/*.{js,css,html,png,woff2}"],
         navigateFallback: "index.html",
       },
     }),
   ],
-  test: { include: ["src/**/*.test.ts"], setupFiles: ["src/test-setup.ts"] },
+  test: {
+    include: ["src/**/*.test.ts", "cloudflare/**/*.test.ts"],
+    setupFiles: ["src/test-setup.ts"],
+  },
 });

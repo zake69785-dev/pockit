@@ -29,33 +29,56 @@ export function Briefing({ data, day }: { data: Data; day: string }) {
           ? `${brief.tasks.length} personal task${brief.tasks.length === 1 ? "" : "s"} due.`
           : "No personal tasks due today."}
       </p>
-      <dl className="breakdown">
-        <div>
-          <dt>Money outside savings</dt>
-          <dd>{money(brief.liquid)}</dd>
-        </div>
-        <div>
-          <dt>Safe daily spending</dt>
-          <dd>{money(brief.daily)}</dd>
-        </div>
-        <div>
-          <dt>Today’s remaining commute</dt>
-          <dd>{money(brief.commute)}</dd>
-        </div>
-      </dl>
-      <p className="hint">
-        Based on records on this device for {day}. Next allowance expected{" "}
-        {brief.nextAllowance}; it is not spendable until received.
-      </p>
-      {brief.lastCanvasSync && (
+      <div className="briefing-cards">
+        <Link to="/calendar">
+          <strong>{brief.classes.length}</strong>
+          <span>Classes today</span>
+        </Link>
+        <Link to="/tasks">
+          <strong>{brief.tasks.length}</strong>
+          <span>Tasks due today</span>
+        </Link>
+        <Link to="/school">
+          <strong>
+            {
+              brief.notifications.filter((n) =>
+                n.id.startsWith("notice:assignment:"),
+              ).length
+            }
+          </strong>
+          <span>Upcoming assignments</span>
+        </Link>
+      </div>
+      <details>
+        <summary>Money, commute & allowance details</summary>
+        <dl className="breakdown">
+          <div>
+            <dt>Money outside savings</dt>
+            <dd>{money(brief.liquid)}</dd>
+          </div>
+          <div>
+            <dt>Safe daily spending</dt>
+            <dd>{money(brief.daily)}</dd>
+          </div>
+          <div>
+            <dt>Today’s remaining commute</dt>
+            <dd>{money(brief.commute)}</dd>
+          </div>
+        </dl>
         <p className="hint">
-          Canvas last synced{" "}
-          {new Date(brief.lastCanvasSync).toLocaleString("en-PH", {
-            timeZone: "Asia/Manila",
-          })}
-          . Cached deadlines may have changed.
+          Based on records on this device for {day}. Next allowance expected{" "}
+          {brief.nextAllowance}; it is not spendable until received.
         </p>
-      )}
+        {brief.lastCanvasSync && (
+          <p className="hint">
+            Canvas last synced{" "}
+            {new Date(brief.lastCanvasSync).toLocaleString("en-PH", {
+              timeZone: "Asia/Manila",
+            })}
+            . Cached deadlines may have changed.
+          </p>
+        )}
+      </details>
       <div className="money-links">
         <Link to="/school">Courses & assignments</Link>
         <Link to="/tasks">Tasks & study</Link>

@@ -1,3 +1,4 @@
+import { Select } from "../components/Select";
 import { useState, type FormEvent } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { ArrowLeft, Star, ArrowRight, Check, BusFront } from "lucide-react";
@@ -32,14 +33,14 @@ export function RouteSelect({
   return (
     <label>
       {label}
-      <select value={value} onChange={(e) => onChange(e.target.value)}>
+      <Select value={value} onChange={(e) => onChange(e.target.value)}>
         <option value="">No saved route</option>
         {data.transport.routes.map((r) => (
           <option key={r.id} value={r.id}>
             {r.name} · {money(routeTotal(r))}
           </option>
         ))}
-      </select>
+      </Select>
     </label>
   );
 }
@@ -76,7 +77,7 @@ export function DayEditor({
     <div className="day-editor">
       <label>
         Attendance for this date
-        <select
+        <Select
           value={p.mode}
           onChange={(e) => update({ mode: e.target.value as Attendance })}
         >
@@ -84,7 +85,7 @@ export function DayEditor({
           <option value="online">Online classes</option>
           <option value="holiday">Holiday / cancelled trip</option>
           <option value="off">No classes</option>
-        </select>
+        </Select>
       </label>
       {p.mode === "campus" && (
         <div className="form-columns">
@@ -430,7 +431,7 @@ export function Transport({
                 </summary>
                 <label>
                   {label} attendance
-                  <select
+                  <Select
                     value={p.mode}
                     onChange={(e) =>
                       updateWeek(i, { mode: e.target.value as Attendance })
@@ -440,7 +441,7 @@ export function Transport({
                     <option value="online">Online</option>
                     <option value="campus">On campus</option>
                     <option value="holiday">Holiday</option>
-                  </select>
+                  </Select>
                 </label>
                 {p.mode === "campus" && (
                   <>

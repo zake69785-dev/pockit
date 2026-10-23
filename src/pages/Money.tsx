@@ -1,3 +1,4 @@
+import { Select } from "../components/Select";
 import { useRef, useState, type FormEvent } from "react";
 import { addDays, format, parseISO } from "date-fns";
 import { Link } from "react-router-dom";
@@ -163,7 +164,7 @@ export function Money({ data, day }: { data: Data; day: string }) {
               <Field label="Account name" name="name" />
               <label>
                 Account type
-                <select name="type">
+                <Select name="type">
                   {(
                     [
                       "cash",
@@ -187,7 +188,7 @@ export function Money({ data, day }: { data: Data; day: string }) {
                       }
                     </option>
                   ))}
-                </select>
+                </Select>
               </label>
               <button className="primary" disabled={busy}>
                 Add account

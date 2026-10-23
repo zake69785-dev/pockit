@@ -1,3 +1,4 @@
+import { choose } from "./helpers";
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { returningUser } from "./helpers";
@@ -24,15 +25,14 @@ test("accounts reconcile, simulations stay read-only and confirmation persists o
     .click();
   await page.getByText("Add an account", { exact: true }).click();
   await page.getByLabel("Account name").fill("GCash");
-  await page.getByLabel("Account type").selectOption("gcash");
+  await choose(page.getByLabel("Account type"), "gcash");
   await page.getByRole("button", { name: "Add account", exact: true }).click();
   await expect(
     page.getByRole("status").filter({ hasText: "Account added" }),
   ).toBeVisible();
   await page.getByText("Transfer between accounts", { exact: true }).click();
-  await page
-    .getByLabel("To account", { exact: true })
-    .selectOption({ label: "GCash" });
+  await choose(page
+    .getByLabel("To account", { exact: true }), { label: "GCash" });
   await page.getByLabel("Transfer amount (PHP)").fill("400.01");
   await page.getByRole("button", { name: "Confirm transfer" }).click();
   await expect(
@@ -52,9 +52,8 @@ test("accounts reconcile, simulations stay read-only and confirmation persists o
   await expect(accounts.locator("dl")).toContainText("₱400.01");
   await page.getByLabel("Item name").fill("Notebook");
   await page.getByLabel("Price (PHP)", { exact: true }).fill("99.99");
-  await page
-    .getByLabel("Payment account", { exact: true })
-    .selectOption({ label: "GCash" });
+  await choose(page
+    .getByLabel("Payment account", { exact: true }), { label: "GCash" });
   await page.getByRole("button", { name: "Check affordability" }).click();
   await expect(
     page.getByText("This fits your current plan.", { exact: true }),
@@ -87,7 +86,7 @@ test("money tools handle empty funds, themes, mobile layout and accessibility", 
   await returningUser(page);
   for (const theme of ["light", "dark"]) {
     await page.getByRole("link", { name: "Settings", exact: true }).click();
-    await page.getByLabel("Color theme").selectOption(theme);
+    await choose(page.getByLabel("Color theme"), theme);
     await page.goto("/#/money");
     await expect(
       page.getByRole("heading", { name: "Your money, in place." }),

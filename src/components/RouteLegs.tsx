@@ -1,3 +1,4 @@
+import { Select } from "./Select";
 import {
   BusFront,
   Bus,
@@ -60,7 +61,7 @@ export function RouteLegs({
           <div className="route-leg-fields">
             <label>
               {label} leg {index + 1}
-              <select
+              <Select
                 value={leg.mode}
                 onChange={(e) =>
                   update(index, {
@@ -79,7 +80,7 @@ export function RouteLegs({
                 ].map((mode) => (
                   <option key={mode}>{mode}</option>
                 ))}
-              </select>
+              </Select>
             </label>
             <label>
               Fare (PHP)

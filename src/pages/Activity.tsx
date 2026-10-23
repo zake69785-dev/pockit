@@ -1,3 +1,4 @@
+import { Select } from "../components/Select";
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import {
@@ -192,7 +193,7 @@ export function Activity({
             </label>
             <label className="filter-select">
               <span className="sr-only">Filter transactions</span>
-              <select
+              <Select
                 value={category}
                 onChange={(e) => update("category", e.target.value)}
               >
@@ -203,7 +204,7 @@ export function Activity({
                 {categories.map((c) => (
                   <option key={c}>{c}</option>
                 ))}
-              </select>
+              </Select>
             </label>
           </div>
           {filtered.length ? (

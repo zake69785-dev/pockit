@@ -1,3 +1,4 @@
+import { Select } from "../components/Select";
 import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { id, type Data } from "../domain/model";
@@ -254,14 +255,14 @@ export function School({ data }: { data: Data }) {
         <Section title="Assignments">
           <label>
             Filter by course
-            <select value={filter} onChange={(e) => setFilter(e.target.value)}>
+            <Select value={filter} onChange={(e) => setFilter(e.target.value)}>
               <option value="all">All courses</option>
               {s.courses.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.name}
                 </option>
               ))}
-            </select>
+            </Select>
           </label>
           {!assignments.length && (
             <p>
@@ -399,7 +400,7 @@ export function School({ data }: { data: Data }) {
               >
                 <label>
                   Course
-                  <select
+                  <Select
                     value={selected.id}
                     onChange={(e) => setCourse(e.target.value)}
                   >
@@ -408,17 +409,17 @@ export function School({ data }: { data: Data }) {
                         {c.name}
                       </option>
                     ))}
-                  </select>
+                  </Select>
                 </label>
                 <label>
                   Grade category
-                  <select key={selected.id} name="category">
+                  <Select key={selected.id} name="category">
                     {selected.categories.map((c) => (
                       <option key={c.id} value={c.id}>
                         {c.name}
                       </option>
                     ))}
-                  </select>
+                  </Select>
                 </label>
                 <Field label="New assignment name" name="name" />
                 <Field

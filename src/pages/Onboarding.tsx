@@ -1,3 +1,4 @@
+import { Select } from "../components/Select";
 import { useState, useEffect, type FormEvent } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import {
@@ -214,7 +215,7 @@ function Setup({ initial }: { initial: SetupDraft }) {
             {input("Normal allowance (PHP)", "allowance")}
             <label>
               How often?
-              <select
+              <Select
                 value={d.frequency}
                 onChange={(e) =>
                   patch({ frequency: e.target.value as Frequency })
@@ -229,7 +230,7 @@ function Setup({ initial }: { initial: SetupDraft }) {
                     </option>
                   ),
                 )}
-              </select>
+              </Select>
             </label>
             <label>
               Next allowance expected
@@ -263,7 +264,7 @@ function Setup({ initial }: { initial: SetupDraft }) {
             ].map((day, i) => (
               <label className="schedule-row" key={day}>
                 {day}
-                <select
+                <Select
                   aria-label={`${day} attendance`}
                   value={d.weekly[i]}
                   onChange={(e) =>
@@ -277,7 +278,7 @@ function Setup({ initial }: { initial: SetupDraft }) {
                   <option value="off">No classes</option>
                   <option value="campus">On campus</option>
                   <option value="online">Online</option>
-                </select>
+                </Select>
               </label>
             ))}
           </>
@@ -362,7 +363,7 @@ function Setup({ initial }: { initial: SetupDraft }) {
                 </div>
                 <label>
                   Repeat
-                  <select
+                  <Select
                     value={b.frequency}
                     onChange={(e) =>
                       patch({
@@ -379,7 +380,7 @@ function Setup({ initial }: { initial: SetupDraft }) {
                         {f === "irregular" ? "Once" : f}
                       </option>
                     ))}
-                  </select>
+                  </Select>
                 </label>
                 <button
                   type="button"
@@ -460,7 +461,7 @@ function Setup({ initial }: { initial: SetupDraft }) {
                 </label>
                 <label>
                   Priority
-                  <select
+                  <Select
                     value={d.priority}
                     onChange={(e) =>
                       patch({
@@ -471,7 +472,7 @@ function Setup({ initial }: { initial: SetupDraft }) {
                     <option value="low">Someday</option>
                     <option value="normal">Steady progress</option>
                     <option value="high">A priority</option>
-                  </select>
+                  </Select>
                 </label>
               </>
             )}

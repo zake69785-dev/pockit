@@ -1,3 +1,5 @@
+import { Select } from "../components/Select";
+import { NotificationSettings } from "../components/NotificationSettings";
 import { useState, useRef } from "react";
 import { Download, Upload, Smartphone, ShieldCheck } from "lucide-react";
 import { change, exportFile, restore, db } from "../data/db";
@@ -29,6 +31,7 @@ export function Settings({
         </div>
       </div>
       <div className="dashboard-grid">
+        <NotificationSettings data={data} />
         <Section title="Your personal setup">
           <p className="muted">
             Your opening balances stay in Activity so setup never adds them
@@ -52,7 +55,7 @@ export function Settings({
         <Section title="Appearance">
           <label>
             Color theme
-            <select
+            <Select
               value={data.settings.theme}
               onChange={(e) => {
                 const theme = e.target.value as Data["settings"]["theme"];
@@ -66,7 +69,7 @@ export function Settings({
               <option value="system">Match device</option>
               <option value="light">Light</option>
               <option value="dark">Dark</option>
-            </select>
+            </Select>
           </label>
           <p className="hint">
             Motion follows your device’s Reduce Motion preference.

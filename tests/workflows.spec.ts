@@ -1,3 +1,4 @@
+import { choose } from "./helpers";
 import { returningUser, goSection } from "./helpers";
 import { test, expect, type Page } from "@playwright/test";
 import { addDays, format } from "date-fns";
@@ -14,7 +15,7 @@ async function transaction(
   await page
     .getByRole("button", { name: "Add transaction", exact: true })
     .click();
-  await page.getByLabel("Transaction type").selectOption(type);
+  await choose(page.getByLabel("Transaction type"), type);
   await page.getByLabel("Description", { exact: true }).fill(name);
   await page.getByLabel("Amount (PHP)", { exact: true }).fill(amount);
   await page
@@ -113,9 +114,8 @@ test("essential payment, history editing and delete", async ({ page }) => {
     .click();
   await page.getByLabel("Description").fill("Books paid");
   await page.getByLabel("Amount (PHP)").fill("200");
-  await page
-    .getByLabel("Pay an essential")
-    .selectOption({ label: "School books" });
+  await choose(page
+    .getByLabel("Pay an essential"), { label: "School books" });
   await page
     .getByRole("button", { name: "Save transaction", exact: true })
     .click();
@@ -144,7 +144,7 @@ test("validated backup export and restore, theme and offline reload", async ({
   await page.goto("/");
   await transaction(page, "income", "Backup allowance", "1234.56");
   await page.getByRole("link", { name: "Settings", exact: true }).click();
-  await page.getByLabel("Color theme").selectOption("dark");
+  await choose(page.getByLabel("Color theme"), "dark");
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   const downloadPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "Export financial backup" }).click();
@@ -242,7 +242,7 @@ test("emergency target, withdrawal limits and editing an earlier savings transfe
   await expect(page.getByRole("dialog")).toBeHidden();
   await expect(page.locator(".goal-amount")).toContainText("₱200.00");
   await page.getByRole("button", { name: "Move money" }).click();
-  await page.getByLabel("Transaction type").selectOption("withdraw");
+  await choose(page.getByLabel("Transaction type"), "withdraw");
   await page.getByLabel("Description").fill("Emergency withdrawal");
   await page.getByLabel("Amount (PHP)").fill("300");
   await page

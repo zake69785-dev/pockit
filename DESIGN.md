@@ -1,11 +1,15 @@
-# Pockit 2.0 design system
+# Pockit 3.0 — Lovable visual integration
 
-The user selected a cheerful cream, blue, yellow and mint direction inspired by JuJuly Cafe's energy. The design does not copy its layout, mascot or branding. Pockit's signature is its own pocket-and-coin mark, a strong blue daily guide, and approachable lettering.
+Visual authority: the private first-light-collective reference at commit 778cbc2c39e43b4e9037813485eaa33aee29b67b. Its cozy stationery direction replaces the prior visual reference while existing Pockit data, calculations and navigation destinations remain authoritative.
 
-Theme and interaction tokens live in `src/theme.css`; common layout and form primitives remain in `src/styles.css`. Blue #3265D8 is the main action/data color, yellow #FFD65A highlights the most frequent action, mint supports savings, and cream #FFFDF6 makes the light background warm. Navy #111C32, elevated blue-gray surfaces, softer blues and brighter mint form the independently adjusted dark theme. Body text remains high contrast. DM Sans stays locally hosted.
+The application uses locally hosted Nunito body text and Fraunces display text, the reference mascot, warm paper OKLCH surfaces and cobalt accents. Yellow marks the primary expense action; mint marks positive savings states. Navy surfaces and lighter ink/accent tones form the separate dark theme. Shared tokens are defined in src/theme.css; src/styles.css owns layout primitives without a second competing token palette.
 
-Cards use 24px radii, controls 14px, 4/8/12/16/24/32px spacing, 140/220ms state transitions and a restrained spring for sheets. Motion changes transform/opacity, respects reduced motion, and never counts financial amounts through ambiguous intermediate values. Goal bars animate their scale; the actual amount is always immediately readable.
+Cards use 24px corners, controls 14px and a 4/8/12/16/24/32px spacing scale. Financial amounts use tabular numerals and targeted wrapping. Headings use actual content; financial figures always come from the existing engine. No demo-reset controls, sample records, or Lovable storage implementation are shipped.
 
-Home answers today's safe-spend question first, then offers five quick actions. Bottom navigation: Home, Plan, Calendar, Goals, Activity. Settings is a consistent header button. Setup and transportation are focused flows. Native dialog sheets preserve focus, Escape and tap alternatives to swiping. Every meaningful financial illustration is data-driven; the welcome pocket is original geometric brand artwork.
+Home prioritizes safe spending and quick actions, then compact briefing cards and expandable details. Desktop widths of 1050px and above use a sidebar; mobile retains five primary navigation destinations. Plan, Goals, Activity and Transportation remain accessible from Money. Settings remains in the header. Returning-user setup behavior is preserved.
 
-The primary target is 414 × 896 CSS pixels, with safe-area insets, 16px form inputs and dynamic-viewport sheet constraints for iOS 18.7.10. Desktop uses a two-column canvas. Theme preference is mirrored to localStorage solely for a synchronous pre-paint theme; IndexedDB remains authoritative.
+Select uses Radix for keyboard navigation, focus, typeahead and portalled menus; a hidden native form control preserves actual values and constraint validation. Within a modal, menus portal into its top layer. SelectionSheet provides searchable icon radio selection and checkbox multiselect using native dialog, explicit apply/cancel, safe areas and visual-viewport height limits. Account search appears for collections above five accounts. Reminder categories use multiselect. Date/time and numeric controls stay native.
+
+Motion is limited to short transform/opacity feedback and existing purposeful transitions. Select opens in 140ms, existing route transitions use 220ms, reduced motion removes movement. The reference's continuous mascot float is omitted. Touch hover styling is gated by device capability.
+
+Target viewports are 360/414/1280/1600 × 896 CSS pixels. Browser screenshots and DOM checks use synthetic isolated profiles. Physical iPhone XS Max acceptance is separate and has not been performed. Notification architecture and approval restrictions are documented in docs/PUSH_ARCHITECTURE.md.

@@ -30,6 +30,19 @@ export function Today({
   plan: () => void;
   edit: (e: Entry) => void;
 }) {
+  const hour = Number(
+    new Intl.DateTimeFormat("en-GB", {
+      timeZone: "Asia/Manila",
+      hour: "2-digit",
+      hourCycle: "h23",
+    }).format(new Date()),
+  );
+  const greeting =
+    hour < 12
+      ? "Good morning."
+      : hour < 18
+        ? "Good afternoon."
+        : "Good evening.";
   const b = budget(data, day),
     recent = [...data.entries]
       .reverse()
@@ -62,8 +75,8 @@ export function Today({
         <div>
           <p className="date-label">{format(parseISO(day), "EEEE, MMMM d")}</p>
           <h1>
-            A little today.
-            <br />A brighter tomorrow.
+            {greeting}
+            <br />A little plan for today.
           </h1>
         </div>
         <div className="sun-mark" aria-hidden="true">
@@ -74,7 +87,6 @@ export function Today({
         Accounts · Low Funds Mode · Can I afford this?
       </Link>
       <div className="dashboard-grid home-grid">
-        <Briefing data={data} day={day} />
         <section className="spend-card">
           <div className="row">
             <span>Safe to spend today</span>
@@ -206,6 +218,7 @@ export function Today({
             </div>
           </Section>
         </div>
+        <Briefing data={data} day={day} />
         {(b.shortfall > 0 || b.overdue) && (
           <div className="notice warning wide">
             {b.shortfall > 0 && (

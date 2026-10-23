@@ -1,3 +1,4 @@
+import { Select } from "../components/Select";
 import { useEffect, useMemo, useState } from "react";
 import { id, type Data } from "../domain/model";
 import {
@@ -72,11 +73,11 @@ export function Tasks({ data, day }: { data: Data; day: string }) {
         />
         <label>
           Priority
-          <select name="priority" defaultValue={t?.priority ?? "normal"}>
+          <Select name="priority" defaultValue={t?.priority ?? "normal"}>
             <option value="high">High</option>
             <option value="normal">Normal</option>
             <option value="low">Low</option>
-          </select>
+          </Select>
         </label>
         <Field
           label="Estimated effort (minutes)"
@@ -88,23 +89,23 @@ export function Tasks({ data, day }: { data: Data; day: string }) {
         />
         <label>
           Course association
-          <select name="courseId" defaultValue={t?.courseId ?? ""}>
+          <Select name="courseId" defaultValue={t?.courseId ?? ""}>
             <option value="">Personal</option>
             {s.courses.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.name}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         <label>
           Repeat task
-          <select name="repeat" defaultValue={t?.repeat ?? "none"}>
+          <Select name="repeat" defaultValue={t?.repeat ?? "none"}>
             <option value="none">Do not repeat</option>
             <option value="daily">Daily</option>
             <option value="weekly">Weekly</option>
             <option value="monthly">Monthly</option>
-          </select>
+          </Select>
         </label>
         <label>
           Notes
@@ -132,7 +133,7 @@ export function Tasks({ data, day }: { data: Data; day: string }) {
           <div className="button-row">
             <label>
               Task view
-              <select value={view} onChange={(e) => setView(e.target.value)}>
+              <Select value={view} onChange={(e) => setView(e.target.value)}>
                 {["today", "upcoming", "overdue", "completed", "all"].map(
                   (v) => (
                     <option key={v} value={v}>
@@ -140,11 +141,11 @@ export function Tasks({ data, day }: { data: Data; day: string }) {
                     </option>
                   ),
                 )}
-              </select>
+              </Select>
             </label>
             <label>
               Course filter
-              <select
+              <Select
                 value={course}
                 onChange={(e) => setCourse(e.target.value)}
               >
@@ -155,7 +156,7 @@ export function Tasks({ data, day }: { data: Data; day: string }) {
                     {c.name}
                   </option>
                 ))}
-              </select>
+              </Select>
             </label>
           </div>
           {!tasks.length && <p>No tasks in this view.</p>}
@@ -291,10 +292,10 @@ export function Tasks({ data, day }: { data: Data; day: string }) {
             >
               <label>
                 Session type
-                <select name="mode">
+                <Select name="mode">
                   <option value="focus">Focus</option>
                   <option value="break">Break</option>
-                </select>
+                </Select>
               </label>
               <Field
                 label="Duration (minutes)"
@@ -306,7 +307,7 @@ export function Tasks({ data, day }: { data: Data; day: string }) {
               />
               <label>
                 Linked task or assignment
-                <select name="taskId">
+                <Select name="taskId">
                   <option value="">Unlinked session</option>
                   {s.tasks
                     .filter((t) => !t.done)
@@ -322,7 +323,7 @@ export function Tasks({ data, day }: { data: Data; day: string }) {
                         {a.name}
                       </option>
                     ))}
-                </select>
+                </Select>
               </label>
               <button className="primary" disabled={mutation.busy}>
                 Start timer
@@ -369,7 +370,7 @@ export function Tasks({ data, day }: { data: Data; day: string }) {
           <div className="button-row">
             <label>
               Available from
-              <select
+              <Select
                 value={start}
                 onChange={(e) => setStart(Number(e.target.value))}
               >
@@ -378,11 +379,11 @@ export function Tasks({ data, day }: { data: Data; day: string }) {
                     {String(i).padStart(2, "0")}:00
                   </option>
                 ))}
-              </select>
+              </Select>
             </label>
             <label>
               Available until
-              <select
+              <Select
                 value={end}
                 onChange={(e) => setEnd(Number(e.target.value))}
               >
@@ -391,7 +392,7 @@ export function Tasks({ data, day }: { data: Data; day: string }) {
                     {String(i).padStart(2, "0")}:00
                   </option>
                 ))}
-              </select>
+              </Select>
             </label>
           </div>
           {!suggestions.length && (

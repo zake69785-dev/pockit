@@ -7,9 +7,13 @@ playwright-report/
 *.log
 .env*
 !.env.example
+!.env.production
+**/.dev.vars*
+**/.wrangler/
 backups/
 test-results-webkit/
 test-results-webkit-recheck/
+test-results-webkit-final/
 test-results-final-edge/
 
 # Local agent tooling and preparation are not application source.

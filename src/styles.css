@@ -1,39 +1,11 @@
 @import "tailwindcss" source(none);
 @source "./";
 :root {
-  font-family: "DM Sans", sans-serif;
-  color: #24392f;
-  background: #f5f6f2;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   font-variant-numeric: tabular-nums;
-  --bg: #f5f6f2;
-  --surface: #fff;
-  --ink: #24392f;
-  --muted: #66736a;
-  --line: #e0e5dd;
-  --accent: #235c50;
-  --soft: #eaf0e8;
-  --focus: #146b58;
-  --warning: #79520e;
-  --warn-bg: #fff3d9;
   color-scheme: light;
-}
-:root[data-theme="dark"] {
-  --bg: #141e1a;
-  --surface: #1d2a23;
-  --ink: #e6eee7;
-  --muted: #a7b9ac;
-  --line: #36473c;
-  --accent: #a1d3bc;
-  --soft: #2d4034;
-  --focus: #afe0c9;
-  --warning: #f0cb80;
-  --warn-bg: #3d341f;
-  color-scheme: dark;
-  color: var(--ink);
-  background: var(--bg);
 }
 * {
   box-sizing: border-box;
@@ -1094,37 +1066,141 @@ dialog header {
   }
 }
 
-.money-links { display: flex; flex-wrap: wrap; gap: 12px 24px; margin-bottom: 24px; }
-.money-links a, .money-grid summary { min-height: 44px; display: flex; align-items: center; }
-.money-grid { align-items: start; }
-.money-grid details { margin-top: 16px; }
-.money-grid summary { cursor: pointer; font-weight: 600; }
-.money-grid .form-stack, .purchase-result { margin-top: 16px; }
-.money-grid .breakdown dt { overflow-wrap: anywhere; }
-.money-grid .breakdown dd { font-variant-numeric: tabular-nums; flex-shrink: 0; }
-.money-history { padding-left: 20px; }
-.money-history li { margin-block: 12px; overflow-wrap: anywhere; }
-.money-history strong { display: block; font-variant-numeric: tabular-nums; }
-.money-grid > .panel:first-child { height: auto; }
-.money-grid summary { display: list-item; padding-block: 12px; margin-left: 16px; }
-.money-grid > .panel > .text-button { display: block; margin-top: 16px; }
-.student-grid { align-items: start; }
-.student-grid > .panel:first-child { height: auto; }
-.student-grid details, .briefing details { margin-block: 16px; }
-.student-grid summary, .briefing summary { min-height: 44px; cursor: pointer; padding-block: 12px; }
-.student-item { padding-block: 16px; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
-.student-item .form-stack { margin-top: 16px; }
-.student-grid label, .unified-events { min-width: 0; }
-.task-check { display: flex; align-items: center; gap: 12px; min-height: 44px; }
-.task-check input[type=checkbox] { width: 22px; height: 22px; flex-shrink: 0; }
-.timer-display { font-size: clamp(2rem, 6vw, 3rem); font-variant-numeric: tabular-nums; }
-.event-columns { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 16px; }
-.student-grid textarea { width: 100%; resize: vertical; }
-.briefing .money-links { margin-top: 16px; }
+.money-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  margin-bottom: 24px;
+}
+.money-links a,
+.money-grid summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+.money-grid {
+  align-items: start;
+}
+.money-grid details {
+  margin-top: 16px;
+}
+.money-grid summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.money-grid .form-stack,
+.purchase-result {
+  margin-top: 16px;
+}
+.money-grid .breakdown dt {
+  overflow-wrap: anywhere;
+}
+.money-grid .breakdown dd {
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+.money-history {
+  padding-left: 20px;
+}
+.money-history li {
+  margin-block: 12px;
+  overflow-wrap: anywhere;
+}
+.money-history strong {
+  display: block;
+  font-variant-numeric: tabular-nums;
+}
+.money-grid > .panel:first-child {
+  height: auto;
+}
+.money-grid summary {
+  display: list-item;
+  padding-block: 12px;
+  margin-left: 16px;
+}
+.money-grid > .panel > .text-button {
+  display: block;
+  margin-top: 16px;
+}
+.student-grid {
+  align-items: start;
+}
+.student-grid > .panel:first-child {
+  height: auto;
+}
+.student-grid details,
+.briefing details {
+  margin-block: 16px;
+}
+.student-grid summary,
+.briefing summary {
+  min-height: 44px;
+  cursor: pointer;
+  padding-block: 12px;
+}
+.student-item {
+  padding-block: 16px;
+  border-bottom: 1px solid var(--line);
+  overflow-wrap: anywhere;
+}
+.student-item .form-stack {
+  margin-top: 16px;
+}
+.student-grid label,
+.unified-events {
+  min-width: 0;
+}
+.task-check {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+}
+.task-check input[type="checkbox"] {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+.timer-display {
+  font-size: clamp(2rem, 6vw, 3rem);
+  font-variant-numeric: tabular-nums;
+}
+.event-columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 16px;
+}
+.student-grid textarea {
+  width: 100%;
+  resize: vertical;
+}
+.briefing .money-links {
+  margin-top: 16px;
+}
 /* Keep touch fields legible without disabling pinch zoom. */
-.student-grid input, .student-grid select, .student-grid textarea { font-size: 16px; }
-.student-grid input[type=checkbox] { width: 22px; height: 22px; min-height: 22px; }
-.task-check:has(input:checked) { text-decoration: line-through; }
-.student-grid summary, .briefing summary { touch-action: manipulation; user-select: none; }
-.student-grid summary:active, .briefing summary:active { opacity: .72; }
-.student-grid .button-row > label { flex: 1; min-width: 140px; }
+.student-grid input,
+.student-grid select,
+.student-grid textarea {
+  font-size: 16px;
+}
+.student-grid input[type="checkbox"] {
+  width: 22px;
+  height: 22px;
+  min-height: 22px;
+}
+.task-check:has(input:checked) {
+  text-decoration: line-through;
+}
+.student-grid summary,
+.briefing summary {
+  touch-action: manipulation;
+  user-select: none;
+}
+.student-grid summary:active,
+.briefing summary:active {
+  opacity: 0.72;
+}
+.student-grid .button-row > label {
+  flex: 1;
+  min-width: 140px;
+}

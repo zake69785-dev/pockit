@@ -1,3 +1,4 @@
+import { choose } from "./helpers";
 import { returningUser, goSection } from "./helpers";
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
@@ -8,7 +9,7 @@ test("WCAG AA checks across light and dark routes and transaction sheet", async 
   await returningUser(page);
   for (const theme of ["light", "dark"]) {
     await page.getByRole("link", { name: "Settings", exact: true }).click();
-    await page.getByLabel("Color theme").selectOption(theme);
+    await choose(page.getByLabel("Color theme"), theme);
     await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
     for (const name of [
       "Home",
