@@ -1,9 +1,9 @@
 # Pockit GitHub Pages deployment
 
 - Repository: https://github.com/zake69785-dev/pockit
-- Intended production URL: https://zake69785-dev.github.io/pockit/
+- Live production URL: https://zake69785-dev.github.io/pockit/
 - Publication: GitHub Actions, from `main`, with the Pages source set to Actions.
-- Status: prepared; live verification is recorded after publication succeeds.
+- Status: published and verified on October 23, 2026. HTTPS is enforced.
 
 The workflow obtains the Pages base path from GitHub and passes it to Vite as `BASE_PATH`. HashRouter keeps screen reloads inside `/pockit/`. Manifest start/scope and icon paths are relative; the generated service worker registers under this same path. The local subpath check uses the exact lowercase `/pockit/` directory.
 
@@ -30,3 +30,11 @@ To rerun deployment without changing files, open Actions → Verify and deploy P
 ## Live verification
 
 `node scripts/verify-live.mjs` opens a new isolated browser context and verifies HTTPS, the `/pockit/` scope, manifest, icon dimensions, app routes, direct route reloads and offline reload/navigation. Its zero-balance setup is local to that temporary context. It never reads or changes a user's browser profile or financial records.
+
+## Verified release — October 23, 2026
+
+The [successful workflow](https://github.com/zake69785-dev/pockit/actions/runs/39877230803) built and deployed commit `30e9dfe20bd4dcac0534ad1791026c2591337979`. Type checking, lint, 42 unit/persistence tests, and both 12-scenario Chromium/WebKit browser suites passed the deployment gate.
+
+Live verification passed in isolated Windows Edge and simulated WebKit contexts: HTTPS, standalone manifest, all three PNG icons (192, 512 and Apple 180 pixels), `/pockit/` service-worker scope, all navigation routes, a direct Calendar reload, offline reload and first-time offline Transportation navigation. Both browsers reported zero application console errors. Physical iPhone installation remains a device check.
+
+Deployment changes were limited to Git exclusions, repository/Pages configuration, deployment documentation, verification scripts and CI synchronization/infrastructure. Application screens, the financial engine and user financial records were not modified. The CI harness waits for saved-state transitions, allows one CI retry, retains failure diagnostics, uses Ubuntu's primary HTTPS package mirror and bounds setup/job durations.

@@ -53,28 +53,22 @@ Transport adds every leg of both directions on remaining campus days. Date excep
 
 Savings are protected portions of cash, not additional bank accounts. Save/withdraw entries change the allocation without changing cash or spending analytics. Goals do not reset each month. A deficit is shown honestly; real expenses may exceed the plan, but the daily safe amount never goes negative. The monthly goal suggestion divides the remaining target across the inclusive remaining calendar months; it is guidance, not an automatic transfer.
 
-## Deploy to free GitHub Pages
+## GitHub Pages deployment
 
-No paid API, Apple account, Mac, or subscription is required. Use a **public** GitHub repository for the free Pages path. Publishing the app does not publish browser financial data.
+Pockit is published at **[https://zake69785-dev.github.io/pockit/](https://zake69785-dev.github.io/pockit/)** from the public [zake69785-dev/pockit repository](https://github.com/zake69785-dev/pockit). GitHub Pages uses the **GitHub Actions** source and enforces HTTPS. The deployment and live Edge/WebKit checks succeeded on October 23, 2026; see [DEPLOYMENT.md](DEPLOYMENT.md).
 
-1. Create a public repository (for example `pockit`) in your GitHub account.
-2. Upload/commit this project's application files, `package.json`, `package-lock.json`, `public`, `src`, `tests`, `scripts`, configuration files and `.github/workflows/deploy.yml`. Do not upload exported financial backups. The existing skills and preparation files are not needed by the deployed app and can remain local. The deployment target is `zake69785-dev/pockit`; use the checks below before publishing updates.
-3. If using Git on Windows:
+Push reviewed application changes to `main` to publish updates. The Verify and deploy Pockit workflow runs type checking, lint, unit tests and Chromium/WebKit browser tests, then builds with the Pages-reported base path and publishes only `dist`. The workflow uses Ubuntu's primary package mirror, bounded setup/job times, one CI browser retry and retained failure diagnostics.
 
-   ```powershell
-   git init
-   git branch -M main
-   git add src public tests scripts .github package.json package-lock.json index.html vite.config.ts tsconfig.json playwright.config.ts eslint.config.js .gitignore README.md PRODUCT.md DESIGN.md DEVELOPMENT.md UPGRADE-2.md
-   git commit -m "Build Pockit 2 budgeting PWA"
-   git remote add origin https://github.com/zake69785-dev/pockit.git
-   git push -u origin main
-   ```
+To work from another Windows computer:
 
-4. In the repository, open **Settings → Pages → Build and deployment → Source → GitHub Actions**.
-5. Open **Actions → Verify and deploy Pockit → Run workflow**, or push to `main`. The workflow checks types, lint, unit and browser tests, builds with the correct repository base path, and deploys only `dist`.
-6. Open the deployment URL shown by the workflow, typically `https://zake69785-dev.github.io/pockit/`. Enable Enforce HTTPS in Pages settings if available.
+```powershell
+git clone https://github.com/zake69785-dev/pockit.git
+cd pockit
+npm.cmd ci
+npm.cmd run dev
+```
 
-The workflow uses Pages' reported base path rather than assuming the repository name. Hash routing keeps every screen reloadable without a server rewrite. For a manual repository-path build:
+Hash routing keeps every screen reloadable without a server rewrite. For a manual build with the production repository path:
 
 ```powershell
 $env:BASE_PATH='/pockit/'
@@ -82,7 +76,7 @@ npm.cmd run build
 Remove-Item Env:BASE_PATH
 ```
 
-See the [official Vite Pages deployment guide](https://vite.dev/guide/static-deploy.html#github-pages) for GitHub's deployment setup.
+No paid API, Mac, Apple Developer account or subscription is required. Browser financial data is not included in the repository or deployment. See the [official Vite Pages guide](https://vite.dev/guide/static-deploy.html#github-pages) for the platform configuration.
 
 ## Install on iPhone and use offline
 

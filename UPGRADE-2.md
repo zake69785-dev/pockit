@@ -27,7 +27,7 @@ The reference contributes energetic blue, warm paper, friendly lettering and str
 
 ## Device target
 
-User confirmed iPhone XS Max, iOS **18.7.10**. Windows Edge and simulated Playwright WebKit checks are distinct from physical iPhone tests. No real-device test or live deployment is claimed.
+User confirmed iPhone XS Max, iOS **18.7.10**. Windows Edge and simulated Playwright WebKit checks are distinct from physical iPhone tests. The GitHub Pages deployment was subsequently verified; no real-device test is claimed.
 
 ## Acceptance evidence
 
@@ -35,5 +35,5 @@ October 23, 2026: type checking, ESLint, production build and 42 unit/persistenc
 
 ## Device and hosting handoff
 
-- [ ] Deploy to the owner's GitHub Pages repository and verify the live HTTPS URL. The workflow and instructions are prepared; no repository or deployment was created here.
+- [x] Deploy to https://github.com/zake69785-dev/pockit and verify https://zake69785-dev.github.io/pockit/ over HTTPS, with live Edge/WebKit routing, icons, manifest and offline checks.
 - [ ] On the physical iPhone XS Max / iOS 18.7.10, verify Safari installation, safe areas, software keyboard, gestures, offline launch and Files backup/restore. Windows WebKit simulation is not this device test.
