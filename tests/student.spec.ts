@@ -103,6 +103,7 @@ test("calendar ownership, recurring events and suspended study timer", async ({
   await page.getByRole("link", { name: "Tasks", exact: true }).click();
   await page.getByLabel("Duration (minutes)").fill("1");
   await page.getByRole("button", { name: "Start timer", exact: true }).click();
+  await expect(page.getByRole("timer")).toBeVisible();
   await page.reload();
   await expect(page.getByRole("timer")).toBeVisible();
   // Simulate elapsed wall-clock time only in this isolated test database.
