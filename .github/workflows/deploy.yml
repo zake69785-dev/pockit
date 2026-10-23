@@ -25,6 +25,11 @@ jobs:
       - run: npm run lint
       - run: npm test
       - run: npm run build
+      - name: Use Ubuntu primary package mirror
+        run: |
+          if [ -f /etc/apt/apt-mirrors.txt ]; then
+            sudo sed -i 's|http://azure.archive.ubuntu.com/ubuntu|https://archive.ubuntu.com/ubuntu|g' /etc/apt/apt-mirrors.txt
+          fi
       - run: npx playwright install --with-deps chromium webkit
         timeout-minutes: 5
       - run: npm run test:e2e
