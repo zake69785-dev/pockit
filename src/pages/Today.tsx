@@ -83,9 +83,6 @@ export function Today({
           <Sparkles size={32} />
         </div>
       </div>
-      <Link className="text-button" to="/money">
-        Accounts · Low Funds Mode · Can I afford this?
-      </Link>
       <div className="dashboard-grid home-grid">
         <section className="spend-card">
           <div className="row">

@@ -234,11 +234,30 @@ export async function pushServiceRequest(
       );
     throw new Error("Subscription expired. Enable notifications again.");
   }
-  if (!response.ok)
+  if (!response.ok) {
+    if (path === "/pair" && response.status === 401)
+      throw new Error(
+        "This code is invalid, expired, or already used. Obtain a fresh code and try again within five minutes.",
+      );
+    if (response.status === 401)
+      throw new Error(
+        "Pair this device again. The session expired; obtain a new one-time code.",
+      );
+    if (response.status === 429)
+      throw new Error(
+        "Too many pairing attempts. Wait 15 minutes, then use a fresh code.",
+      );
+    if (response.status === 403)
+      throw new Error(
+        "This website is not allowed by the push service. Open the current Pockit site or contact the administrator.",
+      );
+    if (response.status === 400)
+      throw new Error(
+        "The push service rejected this request. Check that the code or reminder count is valid, then retry.",
+      );
     throw new Error(
-      response.status === 401
-        ? "Pair this device again to connect securely."
-        : "Push service unavailable. Your local records are safe. Retry later.",
+      "Push service error. Your local records are safe. Retry later.",
     );
+  }
   return response;
 }

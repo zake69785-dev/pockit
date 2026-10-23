@@ -443,30 +443,55 @@ export function School({ data }: { data: Data }) {
             )}
           </details>
         </Section>
-        <Section title="FEU Canvas">
-          <p>
+        <Section title="FEU Canvas" className="canvas-card">
+          <p className="canvas-intro">
+            Bring courses, deadlines, announcements and available grades into
+            your offline school view.
+          </p>
+          <p
+            className="connection-state"
+            data-connected={Boolean(
+              import.meta.env.VITE_CANVAS_GATEWAY && s.canvas.lastSync,
+            )}
+          >
+            {import.meta.env.VITE_CANVAS_GATEWAY
+              ? s.canvas.lastSync
+                ? "Cached · last sync available"
+                : "Gateway configured · not synced"
+              : "Connection not available yet"}
+          </p>
+          <p className="hint">
+            {s.canvas.lastSync
+              ? "Last successful sync: "
+              : "No successful sync yet. "}
+            {s.canvas.lastSync &&
+              new Date(s.canvas.lastSync).toLocaleString("en-PH", {
+                timeZone: "Asia/Manila",
+              })}
+            {s.canvas.lastSync && ". Cached information may be out of date."}
+          </p>
+          <p className="hint">
+            FEU must approve an OAuth connection before Pockit can sign in. No
+            Canvas password or token belongs in this app. Manual courses remain
+            available offline.
+          </p>
+          <div className="canvas-actions">
             <a
               href="https://feu.instructure.com/"
               target="_blank"
               rel="noreferrer"
+              className="secondary button-link"
             >
               Open FEU Canvas
             </a>
-          </p>
-          <p>
-            Last successful sync:{" "}
-            {s.canvas.lastSync
-              ? new Date(s.canvas.lastSync).toLocaleString("en-PH", {
-                  timeZone: "Asia/Manila",
-                })
-              : "Never"}
-            . Cached information may be out of date.
-          </p>
-          <p className="hint">
-            No Canvas credentials are stored in Pockit. Live sync needs an
-            institution-approved connection and a protected service. Manual
-            entries work offline now.
-          </p>
+            <button
+              className="primary"
+              disabled={syncing || !import.meta.env.VITE_CANVAS_GATEWAY}
+              onClick={() => void sync()}
+            >
+              {syncing ? "Syncing…" : "Sync Canvas"}
+            </button>
+          </div>
           {s.courses
             .filter((c) => c.origin === "canvas")
             .map((c) => (
@@ -498,13 +523,6 @@ export function School({ data }: { data: Data }) {
                 {c.name}
               </label>
             ))}
-          <button
-            className="secondary"
-            disabled={syncing}
-            onClick={() => void sync()}
-          >
-            {syncing ? "Syncing…" : "Sync Canvas"}
-          </button>
           <p role="status">{syncStatus}</p>
           {s.canvas.announcements.map((a) => (
             <p key={a.id}>

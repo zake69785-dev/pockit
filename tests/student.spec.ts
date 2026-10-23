@@ -61,10 +61,10 @@ test("manual academics, grades and linked tasks persist offline", async ({
   await expect(
     page.getByText("Physics · 80.0% current", { exact: true }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Sync Canvas", exact: true }).click();
   await expect(
-    page.getByText(/FEU sync needs an approved protected service/),
-  ).toBeVisible();
+    page.getByRole("button", { name: "Sync Canvas", exact: true }),
+  ).toBeDisabled();
+  await expect(page.getByText("Connection not available yet")).toBeVisible();
   await context.setOffline(false);
 });
 

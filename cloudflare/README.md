@@ -31,6 +31,16 @@ In another terminal: `npm run push:local-smoke`, `node cloudflare/crypto-smoke.m
 2. The real D1 database ID is in `wrangler.jsonc`. The owner approved `schema.sql`, and it was applied to the remote D1 database on 2026-10-23. A read-only `sqlite_master` check verified exactly the five intended application tables and one explicit index. Do not rerun the schema unless a later migration calls for it.
 3. The approved deployment uploaded `ADMIN_TOKEN`, `DATA_KEY`, `VAPID_SUBJECT`, `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY` as hidden Worker secrets from ignored `cloudflare/.dev.vars`. `VAPID_SUBJECT` uses the owner's `mailto:` contact. Retain `DATA_KEY` securely; losing it makes stored subscriptions unreadable. Never use public `vars` for secrets. [Secrets](https://developers.cloudflare.com/workers/configuration/secrets/).
 4. The deployed `/admin/code` endpoint requires `Authorization: Bearer <ADMIN_TOKEN>` and should only be called from a trusted terminal. The response contains a five-minute, one-use pairing code. Never place the admin token in the Pockit browser. Rate limits constrain code guesses. The device receives a separate random scoped token after pairing. A remote synthetic pairing and immediate revocation succeeded; no subscription was created.
+
+   To issue a real code, the administrator runs this from a trusted PowerShell terminal after loading `ADMIN_TOKEN` into the session from the approved secret store (never from the Pockit UI or a committed file):
+
+   ```powershell
+   $pairing = Invoke-RestMethod -Method Post -Uri 'https://pockit-push.sancheesekyle238.workers.dev/admin/code' -Headers @{ Authorization = "Bearer $env:ADMIN_TOKEN" } -ContentType 'application/json' -Body '{}'
+   $pairing.code
+   ```
+
+   Transfer that one-use code privately to the device, enter it within five minutes, and clear the terminal session's `ADMIN_TOKEN` when finished. A failed redemption can mean an invalid, expired, or already redeemed code; issue a fresh code instead of retrying the old one. The Worker deliberately returns the same response for these cases to avoid revealing which codes exist.
+
 5. Benchmark actual Worker CPU for API and scheduled delivery on Workers Free before real use. Local Node timing is only a preliminary signal. One reminder is sent per Cron run to bound work. If a real invocation consistently exceeds 10 ms, stop and redesign delivery on the free tier; do not upgrade billing.
 6. The pending GitHub Pages build now gets only `VITE_PUSH_GATEWAY` and `VITE_PUSH_PUBLIC_KEY` from tracked `.env.production`. The former is the Worker HTTPS base URL; the latter is public. `npm run audit:site-build` checks the built assets, and the Pages workflow runs that audit before upload. Publishing the website still requires separate approval; hosting stays on GitHub Pages.
 7. Pair and enable from the iPhone Home Screen PWA after separate website publication approval. Test a synthetic future reminder with the app closed, click handling, denial, offline sync and disabling. Do not claim physical iPhone delivery from automated WebKit tests.

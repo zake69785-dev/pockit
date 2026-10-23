@@ -18,7 +18,8 @@ const gateway = import.meta.env.VITE_PUSH_GATEWAY as string | undefined;
 const publicKey = import.meta.env.VITE_PUSH_PUBLIC_KEY as string | undefined;
 export function NotificationSettings({ data }: { data: Data }) {
   const [preferences, setPreferences] = useState(loadPushPreferences);
-  const [message, setMessage] = useState("Push service is not connected.");
+  const [message, setMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const [code, setCode] = useState("");
   const [token, setToken] = useState("");
@@ -32,10 +33,11 @@ export function NotificationSettings({ data }: { data: Data }) {
   async function act(work: () => Promise<void>) {
     if (busy) return;
     setBusy(true);
+    setErrorMessage("");
     try {
       await work();
     } catch (error) {
-      setMessage(
+      setErrorMessage(
         error instanceof Error
           ? error.message
           : "Could not connect. Retry when online.",
@@ -46,11 +48,22 @@ export function NotificationSettings({ data }: { data: Data }) {
   }
   return (
     <Section title="iPhone notifications" className="wide">
-      <p>
-        On iPhone, open Pockit in Safari, choose Share → Add to Home Screen,
-        then open its Home Screen icon. Enable notifications here and grant
-        permission.
-      </p>
+      <p>Set up reminders on this device in a few steps.</p>
+      <ol className="notification-steps">
+        <li>
+          Ask the Pockit administrator for a one-time pairing code. They issue
+          it through the protected Worker admin endpoint; it expires in five
+          minutes and works once.
+        </li>
+        <li>Enter the code below and pair this device.</li>
+        <li>
+          On iPhone, open Pockit from its Home Screen icon, then tap Enable
+          notifications and allow permission.
+        </li>
+        <li>
+          Sync reminders after changes and check the connection status here.
+        </li>
+      </ol>
       <p className="hint">
         Delivery needs a network connection and permission in iOS Settings.
         Focus modes and device settings can delay notifications. Preferences
@@ -170,84 +183,104 @@ export function NotificationSettings({ data }: { data: Data }) {
         </p>
       ) : (
         <>
-          <label>
-            One-time device pairing code
-            <input
-              value={code}
-              autoComplete="off"
-              autoCapitalize="none"
-              autoCorrect="off"
-              spellCheck={false}
-              onChange={(e) => setCode(e.target.value)}
-            />
-          </label>
-          <button
-            className="secondary"
-            disabled={busy || !code}
-            onClick={() =>
-              void act(async () => {
-                const result = (await (
-                  await request("/pair", { code }, "")
-                ).json()) as { token?: string };
-                if (typeof result.token !== "string" || !result.token)
-                  throw new Error(
-                    "The service returned an invalid pairing response.",
-                  );
-                setToken(result.token);
-                setCode("");
-                setMessage(
-                  "Paired for this session. Tap Enable notifications next.",
-                );
-              })
-            }
-          >
-            Pair device
-          </button>
-          <button
-            className="primary"
-            disabled={busy || !token}
-            onClick={() => {
-              // Permission is requested in this tap handler, before network work.
-              const subscription = enablePush(publicKey!);
-              void act(async () => {
-                const sub = await subscription;
-                await request("/subscription", {
-                  subscription: sub.toJSON(),
-                  reminders: schedule,
-                });
-                setLastSync(new Date().toISOString());
-                setMessage(
-                  "Subscribed and synced. Delivery remains subject to device settings.",
-                );
-              });
-            }}
-          >
-            Enable notifications
-          </button>
-          <button
-            className="secondary"
-            disabled={busy || !token}
-            onClick={() =>
-              void act(async () => {
-                const sub = await (
-                  await navigator.serviceWorker.getRegistration()
-                )?.pushManager.getSubscription();
-                if (!sub) throw new Error("Enable notifications first.");
-                await request("/subscription", {
-                  subscription: sub.toJSON(),
-                  reminders: schedule,
-                });
-                setLastSync(new Date().toISOString());
-                setMessage("Reminder schedule synced.");
-              })
-            }
-          >
-            Sync reminders
-          </button>
+          <div className="notification-setup">
+            <p className="connection-state" data-connected={Boolean(token)}>
+              {token
+                ? lastSync
+                  ? "Connected · reminders synced"
+                  : "Paired · notifications not subscribed yet"
+                : "Not paired on this device"}
+            </p>
+            <label>
+              One-time device pairing code
+              <input
+                value={code}
+                placeholder="Paste the code from your administrator"
+                autoComplete="off"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
+                onChange={(e) => setCode(e.target.value)}
+              />
+            </label>
+            <p className="hint">
+              Codes are issued securely outside Pockit. Pockit never asks for
+              the administrator token.
+            </p>
+            <div className="notification-actions">
+              <button
+                className="primary"
+                disabled={busy}
+                onClick={() =>
+                  void act(async () => {
+                    if (!code.trim())
+                      throw new Error(
+                        "Enter a one-time pairing code from the administrator first.",
+                      );
+                    const result = (await (
+                      await request("/pair", { code: code.trim() }, "")
+                    ).json()) as { token?: string };
+                    if (typeof result.token !== "string" || !result.token)
+                      throw new Error(
+                        "The service returned an invalid pairing response.",
+                      );
+                    setToken(result.token);
+                    setCode("");
+                    setMessage(
+                      "Paired for this session. Tap Enable notifications next.",
+                    );
+                  })
+                }
+              >
+                {busy ? "Working…" : "Pair device"}
+              </button>
+              <button
+                className="secondary"
+                disabled={busy || !token}
+                onClick={() => {
+                  // Permission is requested in this tap handler, before network work.
+                  const subscription = enablePush(publicKey!);
+                  void act(async () => {
+                    const sub = await subscription;
+                    await request("/subscription", {
+                      subscription: sub.toJSON(),
+                      reminders: schedule,
+                    });
+                    setLastSync(new Date().toISOString());
+                    setMessage(
+                      "Subscribed and synced. Delivery remains subject to device settings.",
+                    );
+                  });
+                }}
+              >
+                {busy ? "Working…" : "Enable notifications"}
+              </button>
+              <button
+                className="secondary"
+                disabled={busy || !token}
+                onClick={() =>
+                  void act(async () => {
+                    const sub = await (
+                      await navigator.serviceWorker.getRegistration()
+                    )?.pushManager.getSubscription();
+                    if (!sub) throw new Error("Enable notifications first.");
+                    await request("/subscription", {
+                      subscription: sub.toJSON(),
+                      reminders: schedule,
+                    });
+                    setLastSync(new Date().toISOString());
+                    setMessage("Reminder schedule synced.");
+                  })
+                }
+              >
+                {busy ? "Working…" : "Sync reminders"}
+              </button>
+            </div>
+          </div>
         </>
       )}
       <button
-        className="secondary"
+        className="danger notification-revoke"
         disabled={busy}
         onClick={() =>
           void act(async () => {
@@ -272,9 +305,18 @@ export function NotificationSettings({ data }: { data: Data }) {
           })
         }
       >
-        Disable device notifications
+        {busy ? "Working…" : "Disable device notifications"}
       </button>
-      <p role="status">{message}</p>
+      {errorMessage && (
+        <p className="error notification-feedback" role="alert">
+          {errorMessage}
+        </p>
+      )}
+      {message && (
+        <p className="notice notification-feedback" role="status">
+          {message}
+        </p>
+      )}
       <p className="hint">
         Last sync this session:{" "}
         {lastSync

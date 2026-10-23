@@ -90,4 +90,20 @@ describe("push subscription permission boundary", () => {
       ),
     ).rejects.toThrow("Pair");
   });
+  it("explains rejected and rate-limited pairing codes", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => new Response(null, { status: 401 })),
+    );
+    await expect(
+      pushServiceRequest("https://example.test", "/pair", { code: "bad" }, ""),
+    ).rejects.toThrow("invalid, expired, or already used");
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => new Response(null, { status: 429 })),
+    );
+    await expect(
+      pushServiceRequest("https://example.test", "/pair", { code: "bad" }, ""),
+    ).rejects.toThrow("Wait 15 minutes");
+  });
 });

@@ -18,11 +18,7 @@ test("accounts reconcile, simulations stay read-only and confirmation persists o
     amount: 100000,
   });
   await returningUser(page, d);
-  await page
-    .getByRole("link", {
-      name: "Accounts · Low Funds Mode · Can I afford this?",
-    })
-    .click();
+  await page.getByRole("link", { name: "Money", exact: true }).click();
   await page.getByText("Add an account", { exact: true }).click();
   await page.getByLabel("Account name").fill("GCash");
   await choose(page.getByLabel("Account type"), "gcash");
@@ -31,8 +27,9 @@ test("accounts reconcile, simulations stay read-only and confirmation persists o
     page.getByRole("status").filter({ hasText: "Account added" }),
   ).toBeVisible();
   await page.getByText("Transfer between accounts", { exact: true }).click();
-  await choose(page
-    .getByLabel("To account", { exact: true }), { label: "GCash" });
+  await choose(page.getByLabel("To account", { exact: true }), {
+    label: "GCash",
+  });
   await page.getByLabel("Transfer amount (PHP)").fill("400.01");
   await page.getByRole("button", { name: "Confirm transfer" }).click();
   await expect(
@@ -52,8 +49,9 @@ test("accounts reconcile, simulations stay read-only and confirmation persists o
   await expect(accounts.locator("dl")).toContainText("₱400.01");
   await page.getByLabel("Item name").fill("Notebook");
   await page.getByLabel("Price (PHP)", { exact: true }).fill("99.99");
-  await choose(page
-    .getByLabel("Payment account", { exact: true }), { label: "GCash" });
+  await choose(page.getByLabel("Payment account", { exact: true }), {
+    label: "GCash",
+  });
   await page.getByRole("button", { name: "Check affordability" }).click();
   await expect(
     page.getByText("This fits your current plan.", { exact: true }),

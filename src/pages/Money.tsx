@@ -22,6 +22,7 @@ import {
 } from "../domain/model";
 import { routeTotal } from "../domain/transport";
 import { Section } from "../components/Common";
+import { FinancialCharts } from "../components/FinancialCharts";
 import { Field } from "../components/EntryForm";
 import { AccountSelect } from "../components/AccountSelect";
 
@@ -497,6 +498,7 @@ export function Money({ data, day }: { data: Data; day: string }) {
           )}
         </Section>
       </div>
+      <FinancialCharts data={data} day={day} />
     </>
   );
 }

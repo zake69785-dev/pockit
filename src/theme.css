@@ -1630,6 +1630,195 @@ h1 {
   gap: 16px;
   margin-block: 20px;
 }
+.notification-steps {
+  display: grid;
+  gap: 8px;
+  padding-left: 24px;
+  margin: 16px 0 24px;
+  line-height: 1.5;
+}
+.notification-setup {
+  display: grid;
+  gap: 14px;
+  margin-block: 24px;
+}
+.notification-actions,
+.canvas-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.notification-actions > *,
+.canvas-actions > * {
+  min-width: min(100%, 180px);
+  min-height: 48px;
+  flex: 1 1 180px;
+}
+.notification-revoke {
+  display: block;
+  width: 100%;
+  min-height: 48px;
+  margin-top: 20px;
+  padding: 12px 16px;
+}
+.notification-feedback {
+  margin-top: 16px;
+  padding: 12px 16px;
+  border-radius: 14px;
+}
+.connection-state {
+  display: inline-flex;
+  align-items: center;
+  align-self: start;
+  width: fit-content;
+  max-width: 100%;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: var(--warn-bg);
+  color: var(--warning);
+  font-weight: 800;
+}
+.connection-state[data-connected="true"] {
+  background: var(--mint-soft);
+  color: var(--mint-ink);
+}
+.canvas-card {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+}
+.canvas-card .canvas-intro {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+.button-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 16px;
+  border-radius: var(--radius-control);
+  text-align: center;
+  font-weight: 700;
+}
+.finance-insights {
+  margin-block: 28px 36px;
+}
+.finance-insights > h2 {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+.insight-period {
+  max-width: 300px;
+  margin-block: 18px;
+}
+.insight-grid {
+  gap: 18px;
+}
+.insight-grid > * {
+  min-width: 0;
+}
+.chart-total {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 22px;
+  margin-bottom: 16px;
+}
+.chart-rows {
+  display: grid;
+  gap: 14px;
+  margin-top: 16px;
+}
+.chart-row {
+  min-width: 0;
+}
+.chart-row-label {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 12px;
+  line-height: 1.4;
+}
+.chart-row-label > * {
+  overflow-wrap: anywhere;
+}
+.chart-row-label strong {
+  font-variant-numeric: tabular-nums;
+}
+.chart-track {
+  height: 10px;
+  margin-top: 6px;
+  background: var(--soft);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.chart-track span {
+  display: block;
+  height: 100%;
+  min-width: 0;
+  border-radius: inherit;
+}
+.chart-breakdown {
+  margin: 14px 0 0;
+  padding-left: 20px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.balance-chart {
+  margin-top: 18px;
+}
+.balance-chart svg {
+  display: block;
+  width: 100%;
+  height: 170px;
+  color: var(--line);
+}
+.balance-chart .chart-row-label {
+  margin-top: 8px;
+  font-size: 12px;
+}
+.monthly-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 8px;
+  font-size: 13px;
+}
+.monthly-row strong {
+  min-width: 68px;
+}
+.monthly-values {
+  display: grid;
+  flex: 1;
+  min-width: 150px;
+  gap: 4px;
+}
+.monthly-values span {
+  position: relative;
+  display: block;
+  min-height: 20px;
+}
+.monthly-values i {
+  display: block;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--accent);
+}
+.monthly-values span + span i {
+  background: var(--peach-ink);
+}
+@media (max-width: 600px) {
+  .notification-actions,
+  .canvas-actions {
+    flex-direction: column;
+  }
+  .notification-actions > *,
+  .canvas-actions > * {
+    flex: none;
+    width: 100%;
+  }
+}
 .notification-option {
   min-width: 0;
   padding: 16px;
