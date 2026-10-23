@@ -26,10 +26,12 @@ import { expectedOccurrences, billOccurrences } from "../domain/schedule";
 import { travel } from "../domain/transport";
 import { forecast } from "../domain/forecast";
 import { budget } from "../domain/budget";
-import { receive, contribute } from "../domain/actions";
+import { contribute } from "../domain/actions";
+import { ReceiveIncome } from "../components/ReceiveIncome";
 import { change } from "../data/db";
 import { Section, EntryList, Empty } from "../components/Common";
 import { DayEditor } from "./Transport";
+import { StudentCalendar } from "../components/StudentCalendar";
 export function Calendar({
   data,
   day,
@@ -93,6 +95,7 @@ export function Calendar({
         </div>
       </div>
       <div className="dashboard-grid">
+        <StudentCalendar data={data} day={selected} onDate={(date) => { setSelected(date); setMonth(date.slice(0, 7)); }} />
         <Section title="Your month">
           <div className="month-picker">
             <button
@@ -208,17 +211,12 @@ export function Calendar({
                     </small>
                   </div>
                   {!e.received && (
-                    <button
-                      className="small-button"
-                      onClick={() =>
-                        run(
-                          () => change((d) => receive(d, e.source, e.date)),
-                          "Income received. Your balance is updated.",
-                        )
-                      }
-                    >
-                      Receive
-                    </button>
+                    <ReceiveIncome
+                      data={data}
+                      source={e.source}
+                      date={e.date}
+                      run={run}
+                    />
                   )}
                 </div>
               ))}

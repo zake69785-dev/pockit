@@ -2,13 +2,19 @@ import { addDays, format, parseISO } from "date-fns";
 import { type Data, id, today } from "./model";
 import { expectedOccurrences, occurrences } from "./schedule";
 import { budget } from "./budget";
-export function receive(data: Data, source: string, date: string) {
+export function receive(
+  data: Data,
+  source: string,
+  date: string,
+  accountId?: string,
+) {
   const item = expectedOccurrences(data, date, date).find(
     (e) => e.source === source,
   );
   if (!item || item.received)
     throw new Error("This expected income was already received or changed.");
   data.entries.push({
+    ...(accountId ? { accountId } : {}),
     id: id(),
     date: today(),
     name: item.name,

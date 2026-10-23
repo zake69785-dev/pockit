@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { addDays, format } from "date-fns";
 import { freshData, today } from "../src/domain/model";
-import { returningUser } from "./helpers";
+import { returningUser, goSection } from "./helpers";
 
 test.use({ reducedMotion: "no-preference" });
 test("profile navigation and rendering with 1000 ledger records", async ({
@@ -54,7 +54,7 @@ test("profile navigation and rendering with 1000 ledger records", async ({
   const timings: Record<string, number> = {};
   for (const route of ["Calendar", "Goals", "Activity", "Plan", "Home"]) {
     const start = Date.now();
-    await page.getByRole("link", { name: route, exact: true }).click();
+    await goSection(page, route);
     await expect(page.locator(".route-view h1")).toBeVisible();
     await page.evaluate(
       () =>

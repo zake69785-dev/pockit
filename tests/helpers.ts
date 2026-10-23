@@ -1,5 +1,10 @@
 import { expect, type Page } from "@playwright/test";
 import { freshData, type Data } from "../src/domain/model";
+export async function goSection(page: Page, name: string) {
+  if (["Plan", "Goals", "Activity"].includes(name))
+    await page.getByRole("link", { name: "Money", exact: true }).click();
+  await page.getByRole("link", { name, exact: true }).click();
+}
 
 // Writes only to a fresh, isolated Playwright context, never the user's browser.
 export async function returningUser(page: Page, data?: Data) {

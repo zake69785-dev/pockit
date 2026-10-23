@@ -64,6 +64,7 @@ export function recordTrip(
   date: string,
   direction: "outbound" | "return",
   actual: number,
+  accountId?: string,
 ) {
   const trip = travel(data, date),
     route = direction === "outbound" ? trip.out : trip.back;
@@ -74,6 +75,7 @@ export function recordTrip(
   )
     throw new Error("This journey is already recorded. Edit it in Activity.");
   data.entries.push({
+    ...(accountId ? { accountId } : {}),
     id: id(),
     date,
     name:

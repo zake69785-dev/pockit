@@ -62,6 +62,7 @@ try {
     return { scope: r.scope, script: r.active?.scriptURL };
   });
   assert.equal(registration.scope, "http://127.0.0.1:4174/pockit/");
+  await page.getByRole("link", { name: "Money", exact: true }).click();
   await page.getByRole("link", { name: "Activity", exact: true }).click();
   await page.reload();
   await page.getByRole("heading", { name: "The bigger picture." }).waitFor();

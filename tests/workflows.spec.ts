@@ -1,4 +1,4 @@
-import { returningUser } from "./helpers";
+import { returningUser, goSection } from "./helpers";
 import { test, expect, type Page } from "@playwright/test";
 import { addDays, format } from "date-fns";
 test.beforeEach(async ({ page }) => {
@@ -38,7 +38,7 @@ test("received income, budget, expenses, goals, transfers and persistence", asyn
   await expect(page.getByTestId("safe-spend")).toHaveText("₱450.00");
   await transaction(page, "expense", "Lunch", "70");
   await expect(page.getByTestId("safe-spend")).toHaveText("₱440.00");
-  await page.getByRole("link", { name: "Goals", exact: true }).click();
+  await goSection(page, "Goals");
   await page.getByRole("button", { name: "New goal" }).click();
   await page.getByLabel("Goal name").fill("New laptop");
   await page.getByLabel("Target amount").fill("30000");
@@ -86,7 +86,7 @@ test("expected income does not inflate cash and receiving is idempotent", async 
   await page.getByRole("button", { name: "Schedule income" }).click();
   await page.getByRole("link", { name: "Home", exact: true }).click();
   await expect(page.getByTestId("total-cash")).toHaveText("₱0.00");
-  await page.getByRole("link", { name: "Plan", exact: true }).click();
+  await goSection(page, "Plan");
   await page.getByRole("button", { name: "Receive", exact: true }).click();
   await expect(
     page.getByRole("button", { name: "Receive", exact: true }),
@@ -97,7 +97,7 @@ test("expected income does not inflate cash and receiving is idempotent", async 
 test("essential payment, history editing and delete", async ({ page }) => {
   await page.goto("/");
   await transaction(page, "income", "Cash", "1000");
-  await page.getByRole("link", { name: "Plan", exact: true }).click();
+  await goSection(page, "Plan");
   await page
     .locator("section")
     .filter({
@@ -120,7 +120,7 @@ test("essential payment, history editing and delete", async ({ page }) => {
     .getByRole("button", { name: "Save transaction", exact: true })
     .click();
   await expect(page.getByText(/· Paid/)).toBeVisible();
-  await page.getByRole("link", { name: "Activity", exact: true }).click();
+  await goSection(page, "Activity");
   await page.getByRole("button", { name: /Books paid Essentials/ }).click();
   await page.getByLabel("Amount (PHP)").fill("150");
   await page
@@ -195,7 +195,7 @@ test("small screens, reduced motion, form cancellation and no console errors", a
   await expect(page.locator("main")).toBeFocused();
   await expect(page).not.toHaveURL(/#main/);
   for (const label of ["Home", "Plan", "Goals", "Activity", "Settings"]) {
-    await page.getByRole("link", { name: label, exact: true }).click();
+    await goSection(page, label);
     expect(
       await page.evaluate(
         () => document.documentElement.scrollWidth <= innerWidth,
@@ -228,7 +228,7 @@ test("emergency target, withdrawal limits and editing an earlier savings transfe
 }) => {
   await page.goto("/");
   await transaction(page, "income", "Opening balance", "1000");
-  await page.getByRole("link", { name: "Goals", exact: true }).click();
+  await goSection(page, "Goals");
   await page.getByRole("button", { name: "Edit target" }).click();
   await page.getByLabel("Target amount").fill("10000");
   await page.getByRole("button", { name: "Save goal", exact: true }).click();
@@ -255,7 +255,7 @@ test("emergency target, withdrawal limits and editing an earlier savings transfe
     .click();
   await expect(page.getByRole("dialog")).toBeHidden();
   await expect(page.locator(".goal-amount")).toContainText("₱150.00");
-  await page.getByRole("link", { name: "Activity", exact: true }).click();
+  await goSection(page, "Activity");
   await expect(
     page.getByRole("heading", { name: "The bigger picture." }),
   ).toBeVisible();

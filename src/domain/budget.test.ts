@@ -137,7 +137,7 @@ describe("budget", () => {
 });
 describe("backup validation", () => {
   it("accepts a valid state and rejects versions and missing structure", () => {
-    expect(validate(fixture()).version).toBe(2);
+    expect(validate(fixture()).version).toBe(3);
     expect(() => validate({ version: 2 })).toThrow();
     expect(() => validate(null)).toThrow();
   });

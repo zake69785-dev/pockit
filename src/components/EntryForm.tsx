@@ -11,6 +11,7 @@ import { budget, goalBalance } from "../domain/budget";
 import { change } from "../data/db";
 
 import { billOccurrences } from "../domain/schedule";
+import { AccountSelect } from "./AccountSelect";
 import { addDays, format, parseISO } from "date-fns";
 export type FormKind = "transaction" | "goal" | "bill" | "expected" | "plan";
 export function Field({
@@ -83,6 +84,7 @@ export function EntryForm({
       await change((d) => {
         if (kind === "transaction") {
           const item: Entry = {
+            accountId: str("accountId") || entry?.accountId || "legacy",
             id: entry?.id ?? id(),
             name: str("name"),
             date: str("date"),
@@ -189,6 +191,13 @@ export function EntryForm({
   }
   return (
     <form onSubmit={submit} className="form-stack">
+      {kind === "transaction" && (
+        <AccountSelect
+          data={data}
+          value={entry?.accountId}
+          label={entryKind === "income" ? "Receiving account" : "Account"}
+        />
+      )}
       {kind === "transaction" && (
         <label>
           Transaction type

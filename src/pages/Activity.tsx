@@ -85,6 +85,20 @@ export function Activity({
       </div>
       <div className="dashboard-grid">
         <Section title="Where your money went">
+          {!!data.finance?.adjustments?.some((a) =>
+            a.date.startsWith(month),
+          ) && (
+            <p className="hint">
+              Balance corrections this month:{" "}
+              {money(
+                data.finance.adjustments
+                  .filter((a) => a.date.startsWith(month))
+                  .reduce((sum, a) => sum + a.delta, 0),
+              )}
+              . Corrections and account transfers are excluded from income and
+              spending. <Link to="/money">Review account history</Link>
+            </p>
+          )}
           <div className="analytics-totals">
             <div>
               <span>Spent</span>

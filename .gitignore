@@ -9,6 +9,7 @@ playwright-report/
 !.env.example
 backups/
 test-results-webkit/
+test-results-webkit-recheck/
 test-results-final-edge/
 
 # Local agent tooling and preparation are not application source.

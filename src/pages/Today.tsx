@@ -16,6 +16,7 @@ import { travel } from "../domain/transport";
 import { billOccurrences } from "../domain/schedule";
 import { money, type Data, type Entry } from "../domain/model";
 import { Section, Empty, EntryList } from "../components/Common";
+import { Briefing } from "../components/Briefing";
 export function Today({
   data,
   day,
@@ -69,7 +70,11 @@ export function Today({
           <Sparkles size={32} />
         </div>
       </div>
+      <Link className="text-button" to="/money">
+        Accounts · Low Funds Mode · Can I afford this?
+      </Link>
       <div className="dashboard-grid home-grid">
+        <Briefing data={data} day={day} />
         <section className="spend-card">
           <div className="row">
             <span>Safe to spend today</span>

@@ -15,6 +15,7 @@ import {
 import { travel, routeTotal, recordTrip } from "../domain/transport";
 import { change } from "../data/db";
 import { Sheet } from "../components/Sheet";
+import { AccountSelect } from "../components/AccountSelect";
 import { RouteLegs, TransportIcon } from "../components/RouteLegs";
 import { Section, AddButton, Empty } from "../components/Common";
 export function RouteSelect({
@@ -132,6 +133,7 @@ export function Transport({
   run: (fn: () => Promise<unknown>, message?: string) => void;
 }) {
   const [params] = useSearchParams();
+  const [recorded, setRecorded] = useState<string | null>(null);
   const [route, setRoute] = useState<RouteProfile | null>(null),
     [date, setDate] = useState(() => {
       const candidate = params.get("date") ?? "";
@@ -200,6 +202,48 @@ export function Transport({
         <BusFront className="heading-icon" size={35} />
       </div>
       <div className="dashboard-grid">
+        {recorded && (
+          <Section title="Commute recorded">
+            <p role="status">
+              Your account and travel reservation are updated.
+            </p>
+            <button
+              className="secondary"
+              onClick={() =>
+                run(async () => {
+                  await change((d) => {
+                    d.entries = d.entries.filter(
+                      (e) => e.id !== recorded || !e.trip,
+                    );
+                  });
+                  setRecorded(null);
+                }, "Journey undone. Its travel reservation is restored.")
+              }
+            >
+              Undo recorded journey
+            </button>
+          </Section>
+        )}
+        {data.transport.routes.length > 1 && (
+          <Section title="Compare saved fares">
+            <p className="hint">
+              One-way totals, lowest first. Check endpoints and direction before
+              choosing a route.
+            </p>
+            <dl className="breakdown">
+              {[...data.transport.routes]
+                .sort((a, b) => routeTotal(a) - routeTotal(b))
+                .map((r) => (
+                  <div key={r.id}>
+                    <dt>
+                      {r.name} · {r.legs.length} legs
+                    </dt>
+                    <dd>{money(routeTotal(r))}</dd>
+                  </div>
+                ))}
+            </dl>
+          </Section>
+        )}
         <Section
           title="Your route collection"
           action={
@@ -519,14 +563,18 @@ export function Transport({
               setBusy(true);
               setError("");
               try {
-                await change((d) =>
+                let recordedId = "";
+                await change((d) => {
                   recordTrip(
                     d,
                     date,
                     direction,
                     cents(String(form.get("amount"))),
-                  ),
-                );
+                    String(form.get("accountId")),
+                  );
+                  recordedId = d.entries.at(-1)!.id;
+                });
+                setRecorded(recordedId);
                 setDirection(null);
               } catch (e) {
                 setError(
@@ -559,6 +607,7 @@ export function Transport({
             <p className="hint">
               This completes the whole direction, including all its legs.
             </p>
+            <AccountSelect data={data} />
             {error && (
               <p role="alert" className="error">
                 {error}

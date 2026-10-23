@@ -1,5 +1,12 @@
-import { addDays, format } from "date-fns";
-export const today = () => format(new Date(), "yyyy-MM-dd");
+import { addDays, format, parseISO } from "date-fns";
+import type { Student } from "./student";
+export const today = () =>
+  new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Manila",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
 export const money = (centavos: number) =>
   new Intl.NumberFormat("en-PH", { style: "currency", currency: "PHP" }).format(
     centavos / 100,
@@ -22,6 +29,7 @@ export const categories = [
 ] as const;
 export type Category = (typeof categories)[number];
 export type Entry = {
+  accountId?: string;
   id: string;
   date: string;
   name: string;
@@ -91,7 +99,9 @@ export type TransportPlan = {
   exceptions: ({ date: string; note: string } & DayPlan)[];
 };
 export type Data = {
-  version: 2;
+  version: 3;
+  finance?: Finance;
+  student?: Student;
   entries: Entry[];
   goals: Goal[];
   bills: Bill[];
@@ -108,6 +118,37 @@ export type Data = {
     date: string;
   }[];
 };
+export type Account = {
+  id: string;
+  name: string;
+  type: "legacy" | "cash" | "gcash" | "maya" | "bank" | "savings" | "custom";
+};
+export type Finance = {
+  version: 1;
+  accounts: Account[];
+  transfers: {
+    id: string;
+    from: string;
+    to: string;
+    amount: number;
+    date: string;
+  }[];
+  lowFunds: boolean;
+  adjustments?: {
+    id: string;
+    accountId: string;
+    delta: number;
+    date: string;
+    reason: string;
+  }[];
+};
+export const freshFinance = (): Finance => ({
+  version: 1,
+  accounts: [{ id: "legacy", name: "Legacy / unassigned", type: "legacy" }],
+  transfers: [],
+  lowFunds: false,
+  adjustments: [],
+});
 export const blankTransport = (): TransportPlan => ({
   routes: [],
   outboundId: "",
@@ -116,13 +157,14 @@ export const blankTransport = (): TransportPlan => ({
   exceptions: [],
 });
 export const freshData = (): Data => ({
-  version: 2,
+  version: 3,
+  finance: freshFinance(),
   onboardingComplete: false,
   preference: "balanced",
   allowance: {
     amount: 0,
     frequency: "irregular",
-    anchor: format(addDays(new Date(), 14), "yyyy-MM-dd"),
+    anchor: format(addDays(parseISO(today()), 14), "yyyy-MM-dd"),
   },
   transport: blankTransport(),
   plannedSavings: [],
@@ -139,7 +181,7 @@ export const freshData = (): Data => ({
   bills: [],
   expected: [],
   settings: {
-    nextAllowance: format(addDays(new Date(), 14), "yyyy-MM-dd"),
+    nextAllowance: format(addDays(parseISO(today()), 14), "yyyy-MM-dd"),
     cycleStart: today(),
     leisure: 0,
     schoolDays: [],

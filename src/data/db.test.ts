@@ -5,6 +5,7 @@ import { freshData } from "../domain/model";
 import Dexie from "dexie";
 import { completeSetup } from "./db";
 import { newDraft } from "../domain/onboarding";
+import { editStudent } from "../domain/student";
 const databases: PockitDB[] = [];
 const make = () => {
   const db = new PockitDB(`test-${crypto.randomUUID()}`);
@@ -15,6 +16,69 @@ afterEach(async () => {
   await Promise.all(databases.splice(0).map((d) => d.delete()));
 });
 describe("IndexedDB persistence", () => {
+  it("restores v3 academic data atomically and rejects corrupt student records", async () => {
+    const database = make(), backup = freshData(), s = editStudent(backup);
+    s.tasks.push({ id: "task", name: "Read", due: today(), priority: "normal", notes: "Keep notes", done: false, effort: 25, courseId: "", repeat: "none" });
+    s.timer = { id: "timer", taskId: "task", mode: "focus", startedAt: Date.now(), duration: 1500000 };
+    await restore(backup, database);
+    expect(await read(database)).toEqual(backup);
+    const bad = structuredClone(backup); bad.student!.tasks[0].effort = -1;
+    await expect(restore(bad, database)).rejects.toThrow();
+    expect(await read(database)).toEqual(backup);
+  });
+  it("upgrades v2 without changing records, balances or savings history", async () => {
+    const name = `v2-${crypto.randomUUID()}`,
+      old = new Dexie(name);
+    old.version(2).stores({ state: "id", drafts: "id", recovery: "id" });
+    const legacy = { ...freshData(), version: 2 };
+    delete legacy.finance;
+    legacy.entries.push({
+      id: "original",
+      name: "Existing cash",
+      kind: "income",
+      category: "Other",
+      date: today(),
+      amount: 12345,
+    });
+    legacy.entries.push({
+      id: "save",
+      name: "Savings",
+      kind: "save",
+      category: "Other",
+      date: today(),
+      amount: 2345,
+      goalId: "emergency",
+    });
+    await old.table("state").put({ id: "main", data: legacy });
+    old.close();
+    const upgraded = new PockitDB(name);
+    databases.push(upgraded);
+    const result = await read(upgraded);
+    expect(upgraded.verno).toBe(4);
+    expect(result.entries).toEqual(legacy.entries);
+    expect(result.goals).toEqual(legacy.goals);
+    expect(result.finance?.accounts).toHaveLength(1);
+    expect(result.finance?.transfers).toEqual([]);
+    expect((await upgraded.recovery.get("before-v3"))?.data).toEqual(legacy);
+    await restore(result, upgraded);
+    expect(await read(upgraded)).toEqual(result);
+  });
+  it("rolls back a failed v2 migration including its recovery write", async () => {
+    const name = `failed-v2-${crypto.randomUUID()}`,
+      old = new Dexie(name);
+    old.version(2).stores({ state: "id", drafts: "id", recovery: "id" });
+    const invalid = { ...freshData(), entries: [{ id: "bad" }] };
+    await old.table("state").put({ id: "main", data: invalid });
+    old.close();
+    const upgraded = new PockitDB(name);
+    await expect(upgraded.open()).rejects.toThrow();
+    upgraded.close();
+    await old.open();
+    expect(old.verno).toBe(2);
+    expect((await old.table("state").get("main")).data).toEqual(invalid);
+    expect(await old.table("recovery").get("before-v3")).toBeUndefined();
+    await old.delete();
+  });
   it("upgrades a real version 1 database and keeps its recovery snapshot", async () => {
     const name = `migration-${crypto.randomUUID()}`,
       old = new Dexie(name);
@@ -53,7 +117,7 @@ describe("IndexedDB persistence", () => {
     const upgraded = new PockitDB(name);
     databases.push(upgraded);
     const d = await read(upgraded);
-    expect(d.version).toBe(2);
+    expect(d.version).toBe(3);
     expect(d.entries).toEqual(legacy.entries);
     expect(d.goals).toEqual(legacy.goals);
     expect((await upgraded.recovery.get("before-v2"))?.data).toEqual(legacy);

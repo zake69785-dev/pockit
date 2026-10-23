@@ -13,12 +13,16 @@ export const goalBalance = (data: Data, goalId: string, day = "9999-12-31") =>
     );
 export function budget(data: Data, day: string) {
   const entries = data.entries.filter((e) => e.date <= day);
-  const cash = entries.reduce(
-    (sum, e) =>
-      sum +
-      (e.kind === "income" ? e.amount : e.kind === "expense" ? -e.amount : 0),
-    0,
-  );
+  const cash =
+    (data.finance?.adjustments
+      ?.filter((a) => a.date <= day)
+      .reduce((sum, a) => sum + a.delta, 0) ?? 0) +
+    entries.reduce(
+      (sum, e) =>
+        sum +
+        (e.kind === "income" ? e.amount : e.kind === "expense" ? -e.amount : 0),
+      0,
+    );
   const saved = data.goals.reduce(
     (sum, g) => sum + goalBalance(data, g.id, day),
     0,

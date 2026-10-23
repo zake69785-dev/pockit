@@ -12,8 +12,8 @@ import { useRegisterSW } from "virtual:pwa-register/react";
 import {
   Wallet,
   LayoutGrid,
-  Sprout,
-  ChartNoAxesColumn,
+  GraduationCap,
+  ListChecks,
   Settings as SettingsIcon,
   WifiOff,
   CalendarDays,
@@ -25,6 +25,15 @@ import { EntryForm, type FormKind } from "./components/EntryForm";
 import { Today } from "./pages/Today";
 const Plan = lazy(() =>
   import("./pages/Plan").then((m) => ({ default: m.Plan })),
+);
+const Money = lazy(() =>
+  import("./pages/Money").then((m) => ({ default: m.Money })),
+);
+const School = lazy(() =>
+  import("./pages/School").then((m) => ({ default: m.School })),
+);
+const Tasks = lazy(() =>
+  import("./pages/Tasks").then((m) => ({ default: m.Tasks })),
 );
 const Pockets = lazy(() =>
   import("./pages/Pockets").then((m) => ({ default: m.Pockets })),
@@ -46,10 +55,10 @@ const Settings = lazy(() =>
 );
 const nav = [
   ["/", "Home", Wallet],
-  ["/plan", "Plan", LayoutGrid],
+  ["/school", "School", GraduationCap],
+  ["/money", "Money", LayoutGrid],
   ["/calendar", "Calendar", CalendarDays],
-  ["/pockets", "Goals", Sprout],
-  ["/activity", "Activity", ChartNoAxesColumn],
+  ["/tasks", "Tasks", ListChecks],
 ] as const;
 class Boundary extends Component<{ children: ReactNode }, { error: boolean }> {
   state = { error: false };
@@ -254,6 +263,15 @@ function Application() {
           >
             <div className="route-view" key={location.pathname}>
               <Routes>
+                <Route path="/school" element={<School data={data} />} />
+                <Route
+                  path="/tasks"
+                  element={<Tasks data={data} day={day} />}
+                />
+                <Route
+                  path="/money"
+                  element={<Money data={data} day={day} />}
+                />
                 <Route
                   path="/"
                   element={
@@ -334,7 +352,10 @@ function Application() {
               end={url === "/"}
               className={({ isActive }) =>
                 isActive ||
-                (url === "/plan" && location.pathname === "/transport")
+                (url === "/money" &&
+                  ["/plan", "/transport", "/pockets", "/activity"].includes(
+                    location.pathname,
+                  ))
                   ? "active"
                   : ""
               }

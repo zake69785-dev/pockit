@@ -1,5 +1,5 @@
 import Dexie, { type Table } from "dexie";
-import { freshData, type Data } from "../domain/model";
+import { freshData, freshFinance, type Data } from "../domain/model";
 import { validate } from "../domain/validation";
 import { migrate } from "../domain/migrate";
 import { setupData, type SetupDraft } from "../domain/onboarding";
@@ -25,6 +25,34 @@ export class PockitDB extends Dexie {
             .put({ id: "main", data: validate(migrate(old.data)) });
         }
       });
+    this.version(3)
+      .stores({ state: "id", drafts: "id", recovery: "id" })
+      .upgrade(async (tx) => {
+        const old = await tx.table("state").get("main");
+        if (!old) return;
+        await tx.table("recovery").put({
+          id: "before-v3",
+          data: structuredClone(old.data),
+          createdAt: new Date().toISOString(),
+        });
+        const data = validate(migrate(old.data));
+        data.finance ??= freshFinance();
+        await tx.table("state").put({ id: "main", data: validate(data) });
+      });
+    this.version(4)
+      .stores({ state: "id", drafts: "id", recovery: "id" })
+      .upgrade(async (tx) => {
+        const old = await tx.table("state").get("main");
+        if (!old) return;
+        await tx.table("recovery").put({
+          id: "before-v3-format",
+          data: structuredClone(old.data),
+          createdAt: new Date().toISOString(),
+        });
+        await tx
+          .table("state")
+          .put({ id: "main", data: validate(migrate(old.data)) });
+      });
   }
 }
 export const db = new PockitDB();
@@ -34,13 +62,15 @@ export async function read(database = db): Promise<Data> {
 export async function change(update: (data: Data) => void, database = db) {
   await database.transaction("rw", database.state, async () => {
     const data = await read(database);
+    data.finance ??= freshFinance();
     update(data);
     validate(data);
     await database.state.put({ id: "main", data });
   });
 }
 export async function restore(input: unknown, database = db) {
-  const data = validate(migrate(input));
+  const data = validate(migrate(structuredClone(input)));
+  data.finance ??= freshFinance();
   await database.transaction(
     "rw",
     database.state,

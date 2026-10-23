@@ -1,15 +1,10 @@
 import { Link } from "react-router-dom";
-import {
-  CalendarDays,
-  BusFront,
-  ArrowDownLeft,
-  ArrowRight,
-} from "lucide-react";
+import { CalendarDays, BusFront, ArrowRight } from "lucide-react";
 import { format, parseISO, addDays } from "date-fns";
 import { money, type Data } from "../domain/model";
 import { budget } from "../domain/budget";
 import { expectedOccurrences, billOccurrences } from "../domain/schedule";
-import { receive } from "../domain/actions";
+import { ReceiveIncome } from "../components/ReceiveIncome";
 import { change } from "../data/db";
 import { Section, Empty, AddButton } from "../components/Common";
 import type { FormKind } from "../components/EntryForm";
@@ -48,6 +43,13 @@ export function Plan({
         </div>
       </div>
       <div className="dashboard-grid">
+        <Section title="Accounts & spending decisions">
+          <p>
+            Keep cash, wallets and bank balances together. Check a purchase or
+            get help covering essentials.
+          </p>
+          <Link to="/money">Open Money tools</Link>
+        </Section>
         <Section
           title="Your allowance rhythm"
           action={
@@ -129,18 +131,12 @@ export function Plan({
                   <strong>{money(item.amount)}</strong>
                 </div>
                 <div className="button-row">
-                  <button
-                    className="small-button"
-                    onClick={() =>
-                      run(
-                        () => change((d) => receive(d, item.source, item.date)),
-                        "Income received. Your budget is updated.",
-                      )
-                    }
-                  >
-                    <ArrowDownLeft size={16} />
-                    Receive
-                  </button>
+                  <ReceiveIncome
+                    data={data}
+                    source={item.source}
+                    date={item.date}
+                    run={run}
+                  />
                   {item.id !== "allowance" && (
                     <button
                       className="text-button"

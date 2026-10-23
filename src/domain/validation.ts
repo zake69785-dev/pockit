@@ -1,6 +1,7 @@
 import { isValid, parseISO, format } from "date-fns";
 import { categories, type Data, today } from "./model";
 import { goalBalance } from "./budget";
+import { validateStudent } from "./student-validation";
 function assert(condition: unknown, message: string): asserts condition {
   if (!condition) throw new Error(message);
 }
@@ -24,7 +25,94 @@ export function validate(input: unknown): Data {
     "Invalid backup: expected a Pockit data object.",
   );
   const d = input as Data;
-  assert(d.version === 2, "Unsupported backup version.");
+  assert(d.version === 3, "Unsupported backup version.");
+  if (d.student !== undefined) validateStudent(d.student);
+  if (d.finance !== undefined) {
+    const f = d.finance;
+    if (f?.adjustments !== undefined) {
+      assert(
+        Array.isArray(f.adjustments) && f.adjustments.length <= 100000,
+        "Invalid balance adjustments.",
+      );
+      assert(
+        new Set(f.adjustments.map((a) => a?.id)).size === f.adjustments.length,
+        "Duplicate balance adjustments.",
+      );
+      for (const a of f.adjustments)
+        assert(
+          a &&
+            name(a.id) &&
+            name(a.reason) &&
+            amount(Math.abs(a.delta)) &&
+            a.delta !== 0 &&
+            date(a.date) &&
+            a.date <= today() &&
+            Array.isArray(f.accounts) &&
+            f.accounts.some((account) => account.id === a.accountId),
+          "Invalid balance adjustment.",
+        );
+    }
+    assert(
+      f && f.version === 1 && typeof f.lowFunds === "boolean",
+      "Invalid financial account version.",
+    );
+    assert(
+      Array.isArray(f.accounts) &&
+        f.accounts.length > 0 &&
+        f.accounts.length <= 100,
+      "Invalid accounts.",
+    );
+    assert(
+      new Set(f.accounts.map((a) => a?.id)).size === f.accounts.length,
+      "Duplicate account IDs.",
+    );
+    assert(
+      f.accounts.filter((a) => a?.id === "legacy" && a.type === "legacy")
+        .length === 1,
+      "Legacy account is required.",
+    );
+    for (const a of f.accounts)
+      assert(
+        a &&
+          name(a.id) &&
+          name(a.name) &&
+          [
+            "legacy",
+            "cash",
+            "gcash",
+            "maya",
+            "bank",
+            "savings",
+            "custom",
+          ].includes(a.type) &&
+          (a.type !== "legacy" || a.id === "legacy"),
+        "Invalid account.",
+      );
+    assert(
+      Array.isArray(f.transfers) && f.transfers.length <= 100000,
+      "Invalid account transfers.",
+    );
+    assert(
+      new Set(f.transfers.map((t) => t?.id)).size === f.transfers.length,
+      "Duplicate account transfers.",
+    );
+    for (const t of f.transfers)
+      assert(
+        t &&
+          name(t.id) &&
+          amount(t.amount) &&
+          t.amount > 0 &&
+          date(t.date) &&
+          t.date <= today() &&
+          t.from !== t.to &&
+          [t.from, t.to].every((key) => f.accounts.some((a) => a.id === key)),
+        "Invalid account transfer.",
+      );
+    assert(
+      Number.isSafeInteger(f.transfers.reduce((sum, t) => sum + t.amount, 0)),
+      "Account transfers exceed the safe integer range.",
+    );
+  }
   for (const collection of [d.entries, d.goals, d.bills, d.expected]) {
     assert(
       Array.isArray(collection) && collection.length <= 100000,
@@ -195,6 +283,11 @@ export function validate(input: unknown): Data {
     );
   for (const e of d.entries) {
     assert(
+      e.accountId === undefined ||
+        (d.finance && d.finance.accounts.some((a) => a.id === e.accountId)),
+      "Transaction account is missing.",
+    );
+    assert(
       amount(e.amount) &&
         (e.amount > 0 || !!e.trip) &&
         date(e.date) &&
@@ -276,6 +369,9 @@ export function validate(input: unknown): Data {
     }
   }
   const total =
+    (d.finance?.adjustments?.reduce((sum, a) => sum + Math.abs(a.delta), 0) ??
+      0) +
+    (d.finance?.transfers.reduce((sum, t) => sum + t.amount, 0) ?? 0) +
     [...d.entries, ...d.plannedSavings].reduce((sum, e) => sum + e.amount, 0) +
     d.goals.reduce((sum, g) => sum + g.target, 0) +
     s.leisure +

@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { addDays, format } from "date-fns";
 import { freshData, today } from "../src/domain/model";
-import { returningUser } from "./helpers";
+import { returningUser, goSection } from "./helpers";
 
 test("nine-step onboarding resumes and counts separate savings exactly once", async ({
   page,
@@ -88,7 +88,7 @@ test("nine-step onboarding resumes and counts separate savings exactly once", as
   await expect(page.getByTestId("safe-spend")).toHaveText("₱187.85");
   await page.reload();
   await expect(page.getByTestId("total-cash")).toHaveText("₱1,800.00");
-  await page.getByRole("link", { name: "Goals", exact: true }).click();
+  await goSection(page, "Goals");
   await expect(page.locator(".savings-summary")).toContainText("₱300.00");
   await page.screenshot({ path: "test-results/goals-v2.png", fullPage: true });
 });
@@ -220,7 +220,7 @@ test("recurring income and planned savings keep cash and transfers separate", as
   await expect(
     page.getByRole("button", { name: "Receive", exact: true }),
   ).toHaveCount(0);
-  await page.getByRole("link", { name: "Goals", exact: true }).click();
+  await goSection(page, "Goals");
   await page
     .getByRole("button", { name: "Plan contribution", exact: true })
     .click();
@@ -229,7 +229,7 @@ test("recurring income and planned savings keep cash and transfers separate", as
   await page.getByRole("link", { name: "Home", exact: true }).click();
   await expect(page.getByTestId("total-cash")).toHaveText("₱1,000.00");
   const safe = await page.getByTestId("safe-spend").textContent();
-  await page.getByRole("link", { name: "Goals", exact: true }).click();
+  await goSection(page, "Goals");
   await page.getByRole("button", { name: "Contribute", exact: true }).click();
   await expect(
     page.getByRole("button", { name: "Contribute", exact: true }),
@@ -251,7 +251,7 @@ test("recurring income and planned savings keep cash and transfers separate", as
     "Settings",
     "Home",
   ]) {
-    await page.getByRole("link", { name: route, exact: true }).click();
+    await goSection(page, route);
     await expect(page.locator("h1")).toBeVisible();
   }
   await page.reload();

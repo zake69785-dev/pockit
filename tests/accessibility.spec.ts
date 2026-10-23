@@ -1,4 +1,4 @@
-import { returningUser } from "./helpers";
+import { returningUser, goSection } from "./helpers";
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 test("WCAG AA checks across light and dark routes and transaction sheet", async ({
@@ -12,13 +12,16 @@ test("WCAG AA checks across light and dark routes and transaction sheet", async 
     await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
     for (const name of [
       "Home",
+      "School",
+      "Money",
+      "Tasks",
       "Plan",
       "Calendar",
       "Goals",
       "Activity",
       "Settings",
     ]) {
-      await page.getByRole("link", { name, exact: true }).click();
+      await goSection(page, name);
       await expect(page.locator("h1")).toBeVisible();
       const scan = await new AxeBuilder({ page })
         .setLegacyMode()

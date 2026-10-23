@@ -83,7 +83,7 @@ export function Settings({
           <p className="muted">
             Browser data can be cleared or evicted. Keep a backup somewhere you
             trust, especially before changing devices. Backups contain your
-            financial records as plain JSON.
+            financial and academic records as plain JSON.
           </p>
           <button
             className="secondary full"
@@ -109,6 +109,11 @@ export function Settings({
           </p>
         </Section>
         <Section title="Backup & restore">
+          <p className="hint">
+            Version 3 backups include accounts, courses, assignments, tasks,
+            calendar events and study history. Restore them with Pockit 3.0;
+            older builds do not support this format.
+          </p>
           <button className="primary full" onClick={() => exportFile(data)}>
             <Download size={18} />
             Export financial backup
@@ -151,6 +156,11 @@ export function Settings({
               <p>
                 {pending.entries.length} transactions · {pending.goals.length}{" "}
                 savings pockets · {pending.bills.length} essentials
+              </p>
+              <p>
+                {pending.student?.courses.length ?? 0} courses ·{" "}
+                {pending.student?.tasks.length ?? 0} tasks ·{" "}
+                {pending.student?.events.length ?? 0} calendar events
               </p>
               <p>
                 This replaces all current Pockit data. Export your current data
@@ -209,7 +219,9 @@ export function Settings({
                 <Download size={18} />
                 {copy.id === "before-v2"
                   ? "Download Pockit 1.0 recovery"
-                  : "Download pre-restore recovery"}
+                  : copy.id === "before-v3" || copy.id === "before-v3-format"
+                    ? `Download ${copy.id} recovery`
+                    : "Download pre-restore recovery"}
               </button>
             ))}
           </Section>
@@ -234,7 +246,7 @@ export function Settings({
         </Section>
       </div>
       <p className="footnote">
-        Pockit 2.0 · Made for the money you actually have.
+        Pockit 3.0 · A little plan for money, school and life.
       </p>
     </>
   );

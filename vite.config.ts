@@ -26,9 +26,9 @@ export default defineConfig({
       registerType: "prompt",
       includeAssets: ["icons/*.png"],
       manifest: {
-        name: "Pockit · Everyday money",
+        name: "Pockit · School & everyday money",
         short_name: "Pockit",
-        description: "Your personal budget, always in your pocket.",
+        description: "Your offline student and financial companion.",
         theme_color: "#3265d8",
         background_color: "#fffdf6",
         display: "standalone",

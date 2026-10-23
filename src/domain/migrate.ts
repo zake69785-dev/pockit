@@ -1,6 +1,22 @@
-import { blankTransport, type Data, type RouteProfile } from "./model";
+import {
+  blankTransport,
+  freshFinance,
+  type Data,
+  type RouteProfile,
+} from "./model";
 /** Pure migration. Call validation after this; never alter the supplied backup. */
 export function migrate(input: unknown): unknown {
+  if (
+    input &&
+    typeof input === "object" &&
+    "version" in input &&
+    input.version === 2
+  ) {
+    const upgraded = structuredClone(input) as Data;
+    upgraded.version = 3;
+    upgraded.finance ??= freshFinance();
+    return upgraded;
+  }
   if (
     !input ||
     typeof input !== "object" ||
@@ -29,7 +45,7 @@ export function migrate(input: unknown): unknown {
     outboundId: "legacy-out",
     returnId: "legacy-back",
   }));
-  return {
+  return migrate({
     ...old,
     version: 2,
     onboardingComplete: true,
@@ -41,5 +57,5 @@ export function migrate(input: unknown): unknown {
     },
     transport,
     plannedSavings: [],
-  };
+  });
 }
