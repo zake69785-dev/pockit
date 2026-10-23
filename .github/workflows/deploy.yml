@@ -29,6 +29,15 @@ jobs:
       - run: npm run test:e2e -- --output=test-results-webkit
         env:
           POCKIT_BROWSER: webkit
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: browser-test-diagnostics
+          path: |
+            playwright-report/
+            test-results/
+            test-results-webkit/
+          retention-days: 7
       - uses: actions/configure-pages@v5
         id: pages
       - run: npm run build
